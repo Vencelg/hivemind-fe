@@ -1,5 +1,7 @@
 <script>
     import { push, pop, replace } from "svelte-spa-router";
+    import { user } from "../stores/store.js";
+
 
     const logout = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -23,6 +25,7 @@
 
         if (res.ok) {
             window.localStorage.removeItem("token");
+            $user = null;
             push("/login");
         }
     };

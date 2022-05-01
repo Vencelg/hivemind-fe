@@ -4,7 +4,6 @@
     import { user } from "../stores/store.js";
 
     if ($user) {
-        console.log("debile");
         pop();
     }
 
