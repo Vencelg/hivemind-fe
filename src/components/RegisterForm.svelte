@@ -3,16 +3,19 @@
     const dispatch = createEventDispatcher();
 
     let name = "";
+    let username = "";
     let email = "";
     let password = "";
-    let password_repeat = "";
+    let password_confirmation = "";
 
     const handleRegister = () => {
-        if (password == password_repeat && password.trim().length >= 5) {
+        if (password == password_confirmation && password.trim().length >= 6) {
             const newUser = {
                 name,
+                username,
                 email,
                 password,
+                password_confirmation,
             };
 
             dispatch("added-user", newUser);
@@ -31,6 +34,17 @@
             name="name"
             placeholder="name..."
             bind:value={name}
+        />
+    </div>
+
+    <div class="input">
+        <label for="email">Username</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="username..."
+            bind:value={username}
         />
     </div>
 
@@ -57,13 +71,13 @@
     </div>
 
     <div class="input">
-        <label for="password_repeat">Password Confirm</label>
+        <label for="password_confirmation">Password Confirm</label>
         <input
             type="password"
-            id="password_repeat"
-            name="password_repeat"
+            id="password_confirmation"
+            name="password_confirmation"
             placeholder="repeat password..."
-            bind:value={password_repeat}
+            bind:value={password_confirmation}
         />
     </div>
 

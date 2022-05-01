@@ -1,40 +1,36 @@
 <script>
     import RegisterForm from "../components/RegisterForm.svelte";
     import { push, pop, replace } from "svelte-spa-router";
-    import { authenticated } from "../stores/store.js";
+    import { user } from "../stores/store.js";
 
-    let userAuth = false;
-    authenticated.subscribe((authenticated) => {
-        userAuth = authenticated;
-    });
-
-    if (userAuth) {
+    if ($user) {
+        console.log("debile");
         pop();
     }
 
     const handleRegister = async (e) => {
         const details = e.detail;
-        console.log(details);
 
-        const res = await fetch(
-            "url",
-            {
-                method: "POST",
-                body: JSON.stringify(details),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch("http://127.0.0.1:8000/api/auth/register", {
+            method: "POST",
+            body: JSON.stringify(details),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
         console.log(resultFinal);
-        window.localStorage.setItem("token", resultFinal.token);
-        push("/");
+
+        if (res.ok) {
+            window.localStorage.setItem("token", resultFinal.access_token);
+        }
     };
 </script>
 

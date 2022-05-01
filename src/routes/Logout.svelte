@@ -1,14 +1,16 @@
 <script>
-    import { onMount } from "svelte";
+    import { push, pop, replace } from "svelte-spa-router";
 
-    const logout = async (e) => {
+    const logout = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
         console.log(token);
 
         const res = await fetch("http://127.0.0.1:8000/api/auth/logout", {
             method: "GET",
             headers: {
+                "Access-Control-Allow-Origin": "*",
                 Accept: "application/json",
+                "Content-type": "application/json",
                 Authorization: token,
             },
             mode: "cors",
@@ -21,6 +23,7 @@
 
         if (res.ok) {
             window.localStorage.removeItem("token");
+            push("/login");
         }
     };
 </script>

@@ -1,14 +1,10 @@
 <script>
     import LoginForm from "../components/LoginForm.svelte";
     import { push, pop, replace } from "svelte-spa-router";
-    import { authenticated } from "../stores/store.js";
+    import { user } from "../stores/store.js";
 
-    let userAuth = false;
-    authenticated.subscribe((authenticated) => {
-        userAuth = authenticated;
-    });
-
-    if (userAuth) {
+    if ($user) {
+        console.log("debile");
         pop();
     }
 
@@ -19,7 +15,9 @@
             method: "POST",
             body: JSON.stringify(details),
             headers: {
-                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
             },
             mode: "cors",
         });
@@ -32,6 +30,8 @@
 
         if (res.ok) {
             window.localStorage.setItem("token", resultFinal.access_token);
+            $user = resultFinal.user;
+            push("/");
         }
     };
 </script>
