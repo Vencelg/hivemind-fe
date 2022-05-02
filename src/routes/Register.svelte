@@ -28,7 +28,7 @@
         console.log(resultFinal);
 
         if (res.ok) {
-            window.localStorage.setItem("token", resultFinal.access_token);
+            push("/login");
         }
     };
 </script>

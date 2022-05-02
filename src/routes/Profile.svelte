@@ -35,13 +35,11 @@
     });
 </script>
 
-<main>
-    {#if $user}
+{#if $user}
+    <main>
         <h1>Profile</h1>
-    {:else}
-        <h1>loading...</h1>
-    {/if}
-</main>
+    </main>
+{/if}
 
 <style>
 </style>

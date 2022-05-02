@@ -1,6 +1,6 @@
 <script>
 	import Router from "svelte-spa-router";
-	import {routes} from "./scripts/routes";
+	import { routes } from "./scripts/routes";
 </script>
 
 <nav>
@@ -11,9 +11,8 @@
 	<a href="#/verify">Verify</a>
 	<a href="#/logout">Logout</a>
 </nav>
-<main>
-	<Router {routes}/>
-</main>
+
+<Router {routes} />
 
 <style>
 </style>
