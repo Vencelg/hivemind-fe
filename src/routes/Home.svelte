@@ -5,6 +5,7 @@
     import { posts } from "../stores/posts.js";
     import AddPostForm from "../components/AddPostForm.svelte";
     import AllPosts from "../components/AllPosts.svelte";
+    import SearchBar from "../components/SearchBar.svelte";
 
     let errors = null;
     //ON MOUNT
@@ -177,23 +178,22 @@
         console.log(resultFinal);
 
         if (res.ok) {
-            for (let i = 0; i < $posts.length; i++) {
-                if (($posts[i].id = details)) {
-                    $posts.splice(i, 1);
-                }
-            }
+            posts.update((currentPosts) => {
+                return currentPosts.filter((post) => post.id != details);
+            });
         }
     };
 </script>
 
 {#if $user}
     <main>
+        <SearchBar />
         <h1>Home page</h1>
         <AddPostForm
             on:post-added={handlePostSubmit}
             on:post-added-image={handlePostImageSubmit}
         />
-        <AllPosts {$posts} on:post-deleted={handlePostDelete} />
+        <AllPosts {$posts} on:post-deleted={handlePostDelete} on:post-updated="{handlePostUpdate}" />
     </main>
 {/if}
 

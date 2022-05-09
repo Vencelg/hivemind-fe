@@ -5,6 +5,7 @@ import Register from '../routes/Register.svelte';
 import Profile from '../routes/Profile.svelte';
 import Verify from '../routes/Verify.svelte';
 import Logout from '../routes/Logout.svelte';
+import SearchResult from '../routes/SearchResult.svelte';
 
 export let routes = {
     "/": Home,
@@ -13,6 +14,7 @@ export let routes = {
     "/profile": Profile,
     "/verify": Verify,
     "/logout": Logout,
+    "/search/:value": SearchResult,
 
     "*": NotFound,
 }
