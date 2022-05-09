@@ -54,7 +54,7 @@ import { empty } from "svelte/internal";
                 user_id,
             };
 
-            dispatch("post-added-image", post);
+            dispatch("post-added", post);
         } else {
             const post = {
                 header,

@@ -65,62 +65,6 @@
     const handlePostSubmit = async (e) => {
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
-        const res = await fetch("http://127.0.0.1:8000/api/posts/", {
-            method: "POST",
-            body: JSON.stringify(details),
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                Accept: "application/json",
-                "Content-type": "application/json",
-                Authorization: token,
-            },
-            mode: "cors",
-        });
-
-        const json = await res.json();
-        const result = JSON.stringify(json);
-        let resultFinal = await JSON.parse(result);
-
-        console.log(resultFinal);
-
-        if (res.ok) {
-            $posts = [...$posts, resultFinal.post];
-        }
-    };
-
-    //UPDATE POSTU
-    const handlePostUpdate = async (resultFinal, formData) => {
-        const token = "Bearer " + window.localStorage.getItem("token");
-
-        const resUpdate = await fetch(
-            "http://127.0.0.1:8000/api/posts/" + resultFinal.post.id,
-            {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
-
-        const jsonUpdate = await resUpdate.json();
-        const resultUpdate = JSON.stringify(jsonUpdate);
-        let resultFinalUpdate = await JSON.parse(resultUpdate);
-
-        console.log(resultFinalUpdate);
-
-        if (resUpdate.ok) {
-            $posts = [...$posts, resultFinalUpdate.post];
-        }
-    };
-
-    //TVORBA POSTU S OBRÁZKEM
-    const handlePostImageSubmit = async (e) => {
-        const details = e.detail;
-        const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch("http://127.0.0.1:8000/api/posts/", {
             method: "POST",
@@ -152,6 +96,35 @@
             if (res.ok) {
                 $posts = [...$posts, resultFinal.post];
             }
+        }
+    };
+
+    //UPDATE POSTU
+    const handlePostUpdate = async (resultFinal, formData) => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const resUpdate = await fetch(
+            "http://127.0.0.1:8000/api/posts/" + resultFinal.post.id,
+            {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const jsonUpdate = await resUpdate.json();
+        const resultUpdate = JSON.stringify(jsonUpdate);
+        let resultFinalUpdate = await JSON.parse(resultUpdate);
+
+        console.log(resultFinalUpdate);
+
+        if (resUpdate.ok) {
+            $posts = [...$posts, resultFinalUpdate.post];
         }
     };
 
@@ -191,7 +164,6 @@
         <h1>Home page</h1>
         <AddPostForm
             on:post-added={handlePostSubmit}
-            on:post-added-image={handlePostImageSubmit}
         />
         <AllPosts {$posts} on:post-deleted={handlePostDelete} on:post-updated="{handlePostUpdate}" />
     </main>
