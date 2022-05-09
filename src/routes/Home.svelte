@@ -86,11 +86,10 @@
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
-        console.log(resultFinal);
-
         let formData = details.formData;
 
         if (formData) {
+            console.log(resultFinal);
             handlePostUpdate(resultFinal, formData);
         } else {
             if (res.ok) {
@@ -102,20 +101,17 @@
     //UPDATE POSTU
     const handlePostUpdate = async (resultFinal, formData) => {
         const token = "Bearer " + window.localStorage.getItem("token");
-
-        const resUpdate = await fetch(
-            "http://127.0.0.1:8000/api/posts/" + resultFinal.post.id,
-            {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+       
+        const resUpdate = await fetch("http://127.0.0.1:8000/api/posts/" + resultFinal.post.id, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const jsonUpdate = await resUpdate.json();
         const resultUpdate = JSON.stringify(jsonUpdate);
@@ -162,10 +158,12 @@
     <main>
         <SearchBar />
         <h1>Home page</h1>
-        <AddPostForm
-            on:post-added={handlePostSubmit}
+        <AddPostForm on:post-added={handlePostSubmit} />
+        <AllPosts
+            {$posts}
+            on:post-deleted={handlePostDelete}
+            on:post-updated={handlePostUpdate}
         />
-        <AllPosts {$posts} on:post-deleted={handlePostDelete} on:post-updated="{handlePostUpdate}" />
     </main>
 {/if}
 

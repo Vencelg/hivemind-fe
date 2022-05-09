@@ -1,6 +1,8 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import { posts } from "../stores/posts.js";
+    import { user } from "../stores/store.js";
+
     const dispatch = createEventDispatcher();
     let formOpen = false;
     let formDisplay = "none";
@@ -43,9 +45,12 @@
             formData.append("upvotes", upvotes);
         }
         if(files) {
-            formData.append("image");
+            formData.append("image", files[0]);
         }
-        dispatch("post-updated", id);
+
+        formData.append("user_id", $user.id);
+        formData.append("id", id);
+        dispatch("post-updated", formData);
     };
 </script>
 

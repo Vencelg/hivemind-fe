@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher, onMount } from "svelte";
-import { empty } from "svelte/internal";
+    import { empty } from "svelte/internal";
     import { user } from "../stores/store.js";
 
     const dispatch = createEventDispatcher();
