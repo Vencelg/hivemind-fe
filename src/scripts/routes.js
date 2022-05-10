@@ -11,7 +11,7 @@ export let routes = {
     "/": Home,
     "/login": Login,
     "/register": Register,
-    "/profile": Profile,
+    "/profile/:user": Profile,
     "/verify": Verify,
     "/logout": Logout,
     "/search/:value": SearchResult,
