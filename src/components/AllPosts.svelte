@@ -48,7 +48,6 @@
             formData.append("image", files[0]);
         }
 
-        formData.append("user_id", $user.id);
         formData.append("id", id);
         dispatch("post-updated", formData);
     };

@@ -101,17 +101,20 @@
     //UPDATE POSTU
     const handlePostUpdate = async (resultFinal, formData) => {
         const token = "Bearer " + window.localStorage.getItem("token");
-       
-        const resUpdate = await fetch("http://127.0.0.1:8000/api/posts/" + resultFinal.post.id, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                Accept: "application/json",
-                Authorization: token,
-            },
-            mode: "cors",
-        });
+
+        const resUpdate = await fetch(
+            "http://127.0.0.1:8000/api/posts/" + resultFinal.post.id,
+            {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
 
         const jsonUpdate = await resUpdate.json();
         const resultUpdate = JSON.stringify(jsonUpdate);
@@ -152,6 +155,41 @@
             });
         }
     };
+
+    const postUpdateHelper = async (e) => {
+        let details = e.detail;
+
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const resUpdate = await fetch(
+            "http://127.0.0.1:8000/api/posts/" + details.get("id"),
+            {
+                method: "POST",
+                body: details,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const jsonUpdate = await resUpdate.json();
+        const resultUpdate = JSON.stringify(jsonUpdate);
+        let resultFinalUpdate = await JSON.parse(resultUpdate);
+
+        console.log(resultFinalUpdate);
+
+        if (resUpdate.ok) {
+            for(let i = 0; i < $posts.length; i++) {
+                if($posts[i].id == resultFinalUpdate.post.id) {
+                    console.log($posts[i]);
+                    $posts[i] = resultFinalUpdate.post;
+                }
+            }
+        }
+    };
 </script>
 
 {#if $user}
@@ -162,7 +200,7 @@
         <AllPosts
             {$posts}
             on:post-deleted={handlePostDelete}
-            on:post-updated={handlePostUpdate}
+            on:post-updated={postUpdateHelper}
         />
     </main>
 {/if}
