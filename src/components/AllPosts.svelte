@@ -2,6 +2,9 @@
     import { createEventDispatcher } from "svelte";
     import { posts } from "../stores/posts.js";
     import { user } from "../stores/store.js";
+    import Fa from "svelte-fa";
+    import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+    import { faWrench } from "@fortawesome/free-solid-svg-icons";
 
     const dispatch = createEventDispatcher();
     let formOpen = false;
@@ -41,15 +44,29 @@
         if (body != "") {
             formData.append("body", body);
         }
-        if(upvotes) {
+        if (upvotes) {
             formData.append("upvotes", upvotes);
         }
-        if(files) {
+        if (files) {
             formData.append("image", files[0]);
         }
 
         formData.append("id", id);
         dispatch("post-updated", formData);
+    };
+
+    const AddTestComment = (id) => {
+        const formData = new FormData();
+
+        formData.append("user_id", $user.id);
+        formData.append("post_id", id);
+        formData.append("comment_content", "Toto je testovací komentář");
+
+        dispatch("comment-added", formData);
+    };
+
+    const DeleteComment = (id) => {
+        dispatch("comment-deleted", id);
     };
 </script>
 
@@ -119,6 +136,21 @@
                 <img src={post.image} alt="" srcset="" />
             {/if}
             <h1>{post.user_id}</h1>
+            <button on:click={AddTestComment(post.id)}>AddTestComment</button>
+
+            {#each post.comments as comment}
+                <div>
+                    <h2>
+                        {comment.comment_content}<span on:click="{DeleteComment(comment.id)}"
+                            ><Fa icon={faTrashCan} /></span
+                        >
+                    </h2>
+                    <h2>
+                        {comment.user.name}<span><Fa icon={faWrench} /></span>
+                    </h2>
+                </div>
+            {/each}
+            <div />
         </div>
     {/each}
 </div>
