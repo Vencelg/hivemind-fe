@@ -89,9 +89,9 @@
         let resultFinal = await JSON.parse(result);
 
         let formData = details.formData;
+        console.log(resultFinal);
 
         if (formData) {
-            console.log(resultFinal);
             handlePostUpdate(resultFinal, formData);
         } else {
             if (res.ok) {
@@ -231,7 +231,7 @@
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(
-            "http://127.0.0.1:8000/api/comments/" + details,
+            "http://127.0.0.1:8000/api/comments/" + details.id,
             {
                 method: "DELETE",
                 headers: {
@@ -251,9 +251,15 @@
         console.log(resultFinal);
 
         if (res.ok) {
-            let allPosts = $posts;
-            for (let i = 0; i < allPosts.length; i++) {
-                
+            for (let i = 0; i < $posts.length; i++) {
+                for (let j = 0; j < $posts[i].comments.length; j++) {
+                    if ($posts[i].comments[j].id == details.id) {
+                        console.log($posts[i].comments);
+                        let temp = $posts;
+                        temp[i].comments.splice(j, 1);
+                        $posts = temp;
+                    }
+                }
             }
         }
     };

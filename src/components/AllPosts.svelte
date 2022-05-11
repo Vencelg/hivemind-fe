@@ -65,8 +65,8 @@
         dispatch("comment-added", formData);
     };
 
-    const DeleteComment = (id) => {
-        dispatch("comment-deleted", id);
+    const DeleteComment = (id, postId) => {
+        dispatch("comment-deleted", {id, postId});
     };
 </script>
 
@@ -140,14 +140,34 @@
 
             {#each post.comments as comment}
                 <div>
+                    <h3>{comment.id}</h3>
                     <h2>
-                        {comment.comment_content}<span on:click="{DeleteComment(comment.id)}"
+                        {comment.comment_content}<span
+                            on:click={DeleteComment(comment.id, comment.post_id)}
                             ><Fa icon={faTrashCan} /></span
                         >
                     </h2>
                     <h2>
                         {comment.user.name}<span><Fa icon={faWrench} /></span>
                     </h2>
+                    {#if comment.responses.length != 0}
+                        <div style="border: 1px black solid;">
+                            {#each comment.responses as response}
+                                <h3>{response.id}</h3>
+                                <h2>
+                                    {response.response_content}<span
+                                        on:click={DeleteComment(response.id)}
+                                        ><Fa icon={faTrashCan} /></span
+                                    >
+                                </h2>
+                                <h2>
+                                    {response.user.name}<span
+                                        ><Fa icon={faWrench} /></span
+                                    >
+                                </h2>
+                            {/each}
+                        </div>
+                    {/if}
                 </div>
             {/each}
             <div />
