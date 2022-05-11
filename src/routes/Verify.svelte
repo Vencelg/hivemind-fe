@@ -2,6 +2,9 @@
     import { onMount } from "svelte";
     import { user } from "../stores/store.js";
 
+    let emailSent = false;
+    let buttonStatus = "";
+
     onMount(async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
@@ -53,16 +56,32 @@
 
         if (res.ok) {
             console.log(resultFinal);
+            emailSent = true;
         } else {
             console.log(resultFinal.message);
         }
     };
 </script>
 
-<main>
-    <h1>Verify</h1>
-    <button on:click={sendVerificationEmail}>Send Verification Email</button>
-</main>
+{#if $user}
+    {#if $user.email_verified_at}
+        <h1>Successfully verified</h1>
+    {:else}
+        <main>
+            <h1>Verify</h1>
+            {#if emailSent}
+                <button on:click={sendVerificationEmail} disabled
+                    >Send Verification Email</button
+                >
+                <h2>Email sent!</h2>
+            {:else}
+                <button on:click={sendVerificationEmail}
+                    >Send Verification Email</button
+                >
+            {/if}
+        </main>
+    {/if}
+{/if}
 
 <style>
 </style>

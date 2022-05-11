@@ -8,6 +8,7 @@
     import SearchBar from "../components/SearchBar.svelte";
 
     let errors = null;
+    let verified = false;
     //ON MOUNT
     onMount(async () => {
         if (window.localStorage.getItem("token")) {
@@ -57,7 +58,8 @@
 
         if (res.ok) {
             $posts = resultFinal.posts;
-            console.log($posts);
+            console.log(resultFinal);
+            verified = true;
         }
     });
 
@@ -192,7 +194,7 @@
     };
 </script>
 
-{#if $user}
+{#if $user && verified}
     <main>
         <SearchBar />
         <h1>Home page</h1>
@@ -203,6 +205,10 @@
             on:post-updated={postUpdateHelper}
         />
     </main>
+    {:else if $user && !verified}
+        <main>
+            <h1>You need to verify first</h1>
+        </main>
 {/if}
 
 <style>

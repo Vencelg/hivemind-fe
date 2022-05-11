@@ -31,7 +31,7 @@
 
 <main>
     {#each usersSearchResult as user}
-         <h2>{user.name}</h2>
+        <a href={"#/profile/"+user.id}>{user.name}</a>
     {:else}
          <h1>No users found</h1>
     {/each}

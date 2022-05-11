@@ -9,7 +9,7 @@
     onMount(async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        if (tokewindow.localStorage.getItem("token")) {
+        if (window.localStorage.getItem("token")) {
             console.log(token);
 
             const res = await fetch("http://127.0.0.1:8000/api/auth/", {
