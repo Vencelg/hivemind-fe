@@ -263,6 +263,50 @@
             }
         }
     };
+    const handleCommentUpdate = async (e) => {
+        const details = e.detail;
+        console.log(details);
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/comments/" + details.get("comment_id"),
+            {
+                method: "PUT",
+                body: JSON.stringify({
+                    comment_content: details.get("comment_content"),
+                    upvotes: details.get("upvotes"),
+                }),
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            for (let i = 0; i < $posts.length; i++) {
+                if ($posts[i].id == details.get("post_id")) {
+                    for (let j = 0; j < $posts[i].comments.length; j++) {
+                        if (
+                            $posts[i].comments[j].id ==
+                            details.get("comment_id")
+                        ) {
+                            $posts[i].comments[j] = resultFinal.comment;
+                        }
+                    }
+                }
+            }
+        }
+    };
 </script>
 
 {#if $user && verified}
@@ -276,6 +320,7 @@
             on:post-updated={postUpdateHelper}
             on:comment-added={handleCommentSubmit}
             on:comment-deleted={handleCommentDelete}
+            on:comment-updated={handleCommentUpdate}
         />
     </main>
 {:else if $user && !verified}

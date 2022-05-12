@@ -65,8 +65,19 @@
         dispatch("comment-added", formData);
     };
 
+    const UpdateComment = (id, commentId) => {
+        const formData = new FormData();
+
+        formData.append("comment_id", commentId);
+        formData.append("post_id", id);
+        formData.append("comment_content", "Toto je upravený komentář");
+        formData.append("upvotes", Math.floor(Math.random()*100));
+
+        dispatch("comment-updated", formData);
+    };
+
     const DeleteComment = (id, postId) => {
-        dispatch("comment-deleted", {id, postId});
+        dispatch("comment-deleted", { id, postId });
     };
 </script>
 
@@ -141,14 +152,20 @@
             {#each post.comments as comment}
                 <div>
                     <h3>{comment.id}</h3>
+                    <h3>{comment.upvotes}</h3>
                     <h2>
                         {comment.comment_content}<span
-                            on:click={DeleteComment(comment.id, comment.post_id)}
-                            ><Fa icon={faTrashCan} /></span
+                            on:click={DeleteComment(
+                                comment.id,
+                                comment.post_id
+                            )}><Fa icon={faTrashCan} /></span
                         >
                     </h2>
                     <h2>
-                        {comment.user.name}<span><Fa icon={faWrench} /></span>
+                        {comment.user.name}<span
+                            on:click={UpdateComment(post.id, comment.id)}
+                            ><Fa icon={faWrench} /></span
+                        >
                     </h2>
                     {#if comment.responses.length != 0}
                         <div style="border: 1px black solid;">
