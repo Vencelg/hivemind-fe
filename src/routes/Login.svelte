@@ -2,6 +2,7 @@
     import LoginForm from "../components/LoginForm.svelte";
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
+    import Logo from "../components/Logo.svelte";
 
     if ($user) {
         pop();
@@ -35,5 +36,17 @@
     };
 </script>
 
-<h1>Login</h1>
-<LoginForm on:logged-user={handleLogin} />
+<div class="container">
+    <Logo />
+    <LoginForm on:logged-user={handleLogin} />
+</div>
+
+<style>
+    div.container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+</style>

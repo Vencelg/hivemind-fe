@@ -1,5 +1,6 @@
 <script>
     import RegisterForm from "../components/RegisterForm.svelte";
+    import Logo from "../components/Logo.svelte";
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
 
@@ -33,5 +34,17 @@
     };
 </script>
 
-<h1>Registration</h1>
-<RegisterForm on:added-user={handleRegister} />
+<div class="container">
+    <Logo />
+    <RegisterForm on:added-user={handleRegister} />
+</div>
+
+<style>
+    div.container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+</style>

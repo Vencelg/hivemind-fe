@@ -46,23 +46,12 @@
 
         if (files) {
             const formData = new FormData();
+            formData.append("header", header);
+            formData.append("body", body);
             formData.append("image", files[0]);
-            const post = {
-                header,
-                body,
-                formData,
-                user_id,
-            };
+            formData.append("user_id", user_id);
 
-            dispatch("post-added", post);
-        } else {
-            const post = {
-                header,
-                body,
-                user_id,
-            };
-
-            dispatch("post-added", post);
+            dispatch("post-added", formData);
         }
 
         header = "";

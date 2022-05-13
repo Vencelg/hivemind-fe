@@ -70,15 +70,10 @@
 
         const res = await fetch("http://127.0.0.1:8000/api/posts/", {
             method: "POST",
-            body: JSON.stringify({
-                header: details.header,
-                body: details.body,
-                user_id: details.user_id,
-            }),
+            body: details,
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 Accept: "application/json",
-                "Content-type": "application/json",
                 Authorization: token,
             },
             mode: "cors",
@@ -88,15 +83,10 @@
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
-        let formData = details.formData;
         console.log(resultFinal);
 
-        if (formData) {
-            handlePostUpdate(resultFinal, formData);
-        } else {
-            if (res.ok) {
-                $posts = [...$posts, resultFinal.post];
-            }
+        if (res.ok) {
+            $posts = [...$posts, resultFinal.post];
         }
     };
 
