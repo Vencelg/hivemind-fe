@@ -1,10 +1,32 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { toast } from "@zerodevx/svelte-toast";
     const dispatch = createEventDispatcher();
-    let email = "";
-    let password = "";
+    let email = null;
+    let password = null;
+    let emailErrors = null;
+    let passwordErrors = null;
 
-    const handleLogin = () => {
+    const loginUser = () => {
+        let errorsSet = false;
+        if (!email) {
+            emailErrors = "Email required";
+            errorsSet = true;
+            toast.push(emailErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (!password) {
+            passwordErrors = "Password required";
+            errorsSet = true;
+            toast.push(passwordErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (errorsSet) {
+            return;
+        }
+
         const user = {
             email,
             password,
@@ -14,7 +36,7 @@
     };
 </script>
 
-<form on:submit|preventDefault={handleLogin}>
+<form on:submit|preventDefault={loginUser}>
     <div class="input">
         <label for="email">Email</label>
         <input
@@ -23,6 +45,7 @@
             name="email"
             placeholder="email..."
             bind:value={email}
+            class:outline={emailErrors != null}
         />
     </div>
 
@@ -34,15 +57,18 @@
             name="password"
             placeholder="password..."
             bind:value={password}
+            class:outline={passwordErrors != null}
         />
     </div>
 
     <button type="submit">Login</button>
     <a href="#/register">Need to register?</a>
-
 </form>
 
 <style>
+    .outline {
+        border: 1px solid var(--red-color);
+    }
     form {
         display: flex;
         justify-content: center;

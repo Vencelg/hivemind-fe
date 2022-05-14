@@ -29,7 +29,14 @@
         console.log(resultFinal);
 
         if (res.ok) {
+            toast.push("Successfully registered", {
+                classes: ["successNoBar"],
+            });
             push("/login");
+        }else {
+            toast.push("Something went wrong", {
+                classes: ["dangerNoBar"],
+            });
         }
     };
 </script>

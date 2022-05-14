@@ -3,6 +3,7 @@
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
     import Logo from "../components/Logo.svelte";
+    import { toast } from "@zerodevx/svelte-toast";
 
     if ($user) {
         pop();
@@ -26,12 +27,14 @@
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
-        console.log(resultFinal);
-
         if (res.ok) {
             window.localStorage.setItem("token", resultFinal.access_token);
             $user = resultFinal.user;
             push("/");
+        } else {
+            toast.push("Wrong credentials", {
+                classes: ["dangerNoBar"],
+            });
         }
     };
 </script>

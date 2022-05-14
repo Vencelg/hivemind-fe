@@ -1,32 +1,90 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { toast } from "@zerodevx/svelte-toast";
 
     const dispatch = createEventDispatcher();
 
-    let name = "";
-    let username = "";
-    let email = "";
-    let password = "";
-    let password_confirmation = "";
+    let name = null;
+    let username = null;
+    let email = null;
+    let password = null;
+    let password_confirmation = null;
+    let emailErrors = null;
+    let usernameErrors = null;
+    let nameErrors = null;
+    let passwordErrors = null;
+    let passwordConfirmationErrors = null;
+    const _REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-    const handleRegister = () => {
-        if (password == password_confirmation && password.trim().length >= 6) {
-            const newUser = {
-                name,
-                username,
-                email,
-                password,
-                password_confirmation,
-            };
-
-            dispatch("added-user", newUser);
-        } else {
-            console.log("pswd error");
+    const registerUser = () => {
+        let errorsSet = false;
+        if (!name) {
+            nameErrors = "Name required";
+            errorsSet = true;
+            toast.push(nameErrors, {
+                classes: ["dangerNoBar"],
+            });
         }
+        if (!username) {
+            usernameErrors = "Username required";
+            errorsSet = true;
+            toast.push(usernameErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (!email) {
+            emailErrors = "Email required";
+            errorsSet = true;
+            toast.push(emailErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (!_REGEX.test(email)) {
+            emailErrors = "Invalid email adress";
+            errorsSet = true;
+            toast.push(emailErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (!password) {
+            passwordErrors = "Password required";
+            errorsSet = true;
+            toast.push(passwordErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (password.trim().length <= 6) {
+            passwordErrors = "Passwords needs to be atleast 6 characters";
+            errorsSet = true;
+            toast.push(passwordErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (password != password_confirmation) {
+            passwordErrors = "Passwords do not match";
+            passwordConfirmationErrors = "Passwords do not match";
+            errorsSet = true;
+            toast.push(passwordConfirmationErrors, {
+                classes: ["dangerNoBar"],
+            });
+        }
+        if (errorsSet) {
+            return;
+        }
+
+        const newUser = {
+            name,
+            username,
+            email,
+            password,
+            password_confirmation,
+        };
+
+        dispatch("added-user", newUser);
     };
 </script>
 
-<form on:submit|preventDefault={handleRegister}>
+<form on:submit|preventDefault={registerUser}>
     <div class="input">
         <label for="email">Name</label>
         <input
@@ -35,6 +93,7 @@
             name="name"
             placeholder="name..."
             bind:value={name}
+            class:outline={nameErrors != null}
         />
     </div>
 
@@ -46,6 +105,7 @@
             name="username"
             placeholder="username..."
             bind:value={username}
+            class:outline={usernameErrors != null}
         />
     </div>
 
@@ -57,6 +117,7 @@
             name="email"
             placeholder="email..."
             bind:value={email}
+            class:outline={emailErrors != null}
         />
     </div>
 
@@ -68,6 +129,7 @@
             name="password"
             placeholder="password..."
             bind:value={password}
+            class:outline={passwordErrors != null}
         />
     </div>
 
@@ -79,6 +141,7 @@
             name="password_confirmation"
             placeholder="repeat password..."
             bind:value={password_confirmation}
+            class:outline={passwordConfirmationErrors != null}
         />
     </div>
 
@@ -87,6 +150,9 @@
 </form>
 
 <style>
+    .outline {
+        border: 1px solid var(--red-color);
+    }
     form {
         display: flex;
         justify-content: center;
