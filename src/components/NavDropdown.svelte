@@ -4,6 +4,7 @@
     import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
     import { faUser } from "@fortawesome/free-solid-svg-icons";
     import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+    import { push, pop, replace } from "svelte-spa-router";
 
     $: isOpen = false;
 </script>
@@ -15,19 +16,33 @@
             isOpen = !isOpen;
         }}
     >
-        <img
-            src={$user.profile_picture}
-            width="45px"
-            height="45px"
-            alt="Users profile"
-        />
-        <span id="mobileSpan"><Fa icon={faCaretDown} /></span>
-        <p>{$user.name}<span><Fa icon={faCaretDown} /></span></p>
+        <div>
+            <img
+                src={$user.profile_picture}
+                width="45px"
+                height="45px"
+                alt="Users profile"
+            />
+            <span id="mobileSpan"><Fa icon={faCaretDown} /></span>
+            <p>{$user.name}<span><Fa icon={faCaretDown} /></span></p>
+        </div>
     </div>
     {#if isOpen}
         <div class="dropdown">
-            <p>Profile<span><Fa icon={faUser} /></span></p>
-            <p>Logout<span><Fa icon={faRightFromBracket} /></span></p>
+            <p
+                on:click={() => {
+                    push("/profile/" + $user.id);
+                }}
+            >
+                Profile<span><Fa icon={faUser} /></span>
+            </p>
+            <p
+                on:click={() => {
+                    push("/logout");
+                }}
+            >
+                Logout<span><Fa icon={faRightFromBracket} /></span>
+            </p>
         </div>
     {/if}
 </div>
@@ -76,15 +91,18 @@
     .dropdownBox {
         position: relative;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        width: 32%;
+        width: 100%;
         height: 100%;
-        margin: auto;
         transition: 0.1s;
     }
 
-    .dropdownBox:hover {
+    .dropdownBox div {
+        width: max-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
     }
 
@@ -100,18 +118,18 @@
         padding-left: 10px;
     }
 
-    .dropdownBox:hover > #mobileSpan {
+    .dropdownBox div:hover > #mobileSpan {
         color: var(--green-color);
     }
 
-    .dropdownBox:hover > p > span {
+    .dropdownBox div:hover > p > span {
         color: var(--green-color);
     }
 
     @media only screen and (max-width: 1690px) {
-        .dropdownBox {
+       /*  .dropdownBox {
             width: 45%;
-        }
+        } */
     }
 
     @media only screen and (max-width: 1300px) {
@@ -140,8 +158,8 @@
             display: contents;
         }
 
-        .dropdownBox {
+        /* .dropdownBox {
             width: 45%;
-        }
+        } */
     }
 </style>
