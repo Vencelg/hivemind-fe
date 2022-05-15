@@ -1,10 +1,9 @@
 <script>
-    import Fa from "svelte-fa";
-    import { faSquare } from "@fortawesome/free-solid-svg-icons";
+    export let size = 5;
 </script>
 
 <div class="box">
-    <p>Vertel<span>.</span></p>
+    <p style="font-size: {size}rem;">Vertel<span>.</span></p>
 </div>
 
 <style>
@@ -14,7 +13,6 @@
 
     .box p {
         font-family: AlteHaasRegular;
-        font-size: 5rem;
         color: #e2e2e2;
     }
 

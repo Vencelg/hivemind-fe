@@ -5,7 +5,7 @@
     import { posts } from "../stores/posts.js";
     import AddPostForm from "../components/AddPostForm.svelte";
     import AllPosts from "../components/AllPosts.svelte";
-    import SearchBar from "../components/SearchBar.svelte";
+    import Navigation from "../components/Navigation.svelte";
 
     let errors = null;
     let verified = false;
@@ -444,8 +444,8 @@
 </script>
 
 {#if $user && verified}
-    <main>
-        <SearchBar />
+    <Navigation />
+<!--     <main>
         <h1>Home page</h1>
         <AddPostForm on:post-added={handlePostSubmit} />
         <AllPosts
@@ -462,7 +462,7 @@
 {:else if $user && !verified}
     <main>
         <h1>You need to verify first</h1>
-    </main>
+    </main> -->
 {/if}
 
 <style>
