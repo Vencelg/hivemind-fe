@@ -10,13 +10,12 @@
 </script>
 
 <div class="relative">
-    <div
-        class="dropdownBox"
-        on:click={() => {
-            isOpen = !isOpen;
-        }}
-    >
-        <div>
+    <div class="dropdownBox">
+        <div
+            on:click={() => {
+                isOpen = !isOpen;
+            }}
+        >
             <img
                 src={$user.profile_picture}
                 width="45px"
@@ -110,8 +109,9 @@
         border-radius: 2rem;
     }
 
-    .dropdownBox p {
+    .dropdownBox div p {
         color: var(--white-color);
+        padding-left: 10px;
     }
 
     .dropdownBox p span {
@@ -127,7 +127,7 @@
     }
 
     @media only screen and (max-width: 1690px) {
-       /*  .dropdownBox {
+        /*  .dropdownBox {
             width: 45%;
         } */
     }
