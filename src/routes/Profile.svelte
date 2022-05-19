@@ -195,7 +195,6 @@
     div.content div.friends {
         background-color: var(--nav-bg-color);
         border-radius: 20px;
-        position: ;
     }
 
     div.content div.friends div.friendImage {
