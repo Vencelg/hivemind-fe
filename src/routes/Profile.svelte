@@ -3,9 +3,12 @@
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
     import Navigation from "../components/Navigation.svelte";
+    import Post from "../components/Post.svelte";
+    import Fa from "svelte-fa";
+    import { faCog } from "@fortawesome/free-solid-svg-icons";
 
     export let params;
-    let userProfile = {};
+    let userProfile = null;
     let userFriends = [];
 
     onMount(async () => {
@@ -67,66 +70,94 @@
     });
 </script>
 
-{#if $user}
+{#if userProfile}
     <Navigation />
     <main>
         <div class="header">
-            <div
-                style="background-image: url({$user.profile_picture});"
-                class="image"
-            />
-            <div>
-                <p>{$user.name}</p>
-                <p>@{$user.username}</p>
+            <div class="box">
+                <div
+                    style="background-image: url({userProfile.profile_picture});"
+                    class="image"
+                />
+                <div class="userData">
+                    <p class="bigP">
+                        {userProfile.name}
+                        {#if $user.id == userProfile.id}
+                            <span class="cog">
+                                <Fa class="cog" icon={faCog} />
+                            </span>
+                        {/if}
+                    </p>
+                    <p class="smallP">@{userProfile.username}</p>
+                </div>
             </div>
         </div>
         <div class="content">
             <div class="friends">
-                {#each userProfile.profile.friends_of_this_user as friend}
+                {#each userProfile.friends_of_this_user as friend}
                     <div>
-                        <div class="friendImage">
-                            {friend.profile_picture}
-                        </div>
+                        <div
+                            class="friendImage"
+                            style="background-image: url({friend.profile_picture});"
+                        />
                         <p>
                             {friend.name}
                         </p>
                     </div>
                 {/each}
-                {#each userProfile.profile.this_user_friend_of as friend}
+                {#each userProfile.this_user_friend_of as friend}
                     <div>
-                        <div class="friendImage">
-                            {friend.profile_picture}
-                        </div>
+                        <div
+                            class="friendImage"
+                            style="background-image: url({friend.profile_picture});"
+                        />
                         <p>
                             {friend.name}
                         </p>
                     </div>
-                {:else}
-                    <p>User has no friends</p>
                 {/each}
             </div>
             <div class="posts">
-                <p>posts</p>
+                {#each userProfile.posts as post}
+                    <Post {post} />
+                {:else}
+                    <p>User has no posts</p>
+                {/each}
             </div>
         </div>
     </main>
 {/if}
 
 <style>
+    .cog {
+        display: contents;
+        transition: 0.2s;
+        font-size: 1rem;
+    }
+
+    .cog:hover {
+        color: var(--green-color);
+        cursor: pointer;
+    }
+    .box {
+        display: flex;
+    }
+
     main {
         width: 80%;
         margin: auto;
     }
     div.header {
         display: flex;
-        /* justify-content: space-evenly;-*/
-        align-items: center;
+        justify-content: space-between;
         background-color: var(--nav-bg-color);
         margin-top: 5rem;
         border-radius: 20px;
+        padding: 1rem 8%;
+        color: var(--white-color);
     }
 
-    div.header div.image {
+    div.header div.box div.image {
         width: 15rem;
         height: 15rem;
         background-position: center;
@@ -134,6 +165,26 @@
         border-radius: 50%;
     }
 
+    div.header div.box div.userData {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    div.header div.box div.userData p {
+        padding: 1rem 1rem 0 1rem;
+        font-family: AlteHaasRegular;
+    }
+
+    div.header div.box div.userData p.bigP {
+        font-size: 2rem;
+        font-family: AlteHaasBold;
+    }
+
+    div.header div.box div.userData p.smallP {
+        font-size: 1.2rem;
+        color: var(--green-color);
+    }
     div.content {
         display: grid;
         grid-template-columns: 1fr 2fr;
@@ -144,5 +195,13 @@
     div.content div.friends {
         background-color: var(--nav-bg-color);
         border-radius: 20px;
+        position: ;
+    }
+
+    div.content div.friends div.friendImage {
+        background-size: cover;
+        background-position: center;
+        width: 5rem;
+        height: 5rem;
     }
 </style>
