@@ -12,7 +12,6 @@
     }
 
     div.image img {
-        height: calc(100vw/3);
         width: 100%;
     }
 </style>
