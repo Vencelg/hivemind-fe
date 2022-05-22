@@ -6,6 +6,13 @@
     import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
     import { faWrench } from "@fortawesome/free-solid-svg-icons";
     import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+    import { faHeart } from "@fortawesome/free-solid-svg-icons";
+    import { faComment } from "@fortawesome/free-solid-svg-icons";
+    import { getContext } from "svelte";
+    import ImagePopup from "./ImagePopup.svelte";
+
+    const { open } = getContext("simple-modal");
+    const showImage = (imageSrc) => open(ImagePopup, { imageSrc: imageSrc });
 
     export let post;
     let isOwner = false;
@@ -24,12 +31,6 @@
 
     const ChangeFormState = () => {
         formOpen = !formOpen;
-
-        if (formOpen) {
-            formDisplay = "flex";
-        } else {
-            formDisplay = "none";
-        }
     };
 
     const DeletePost = (postId) => {
@@ -134,15 +135,33 @@
     </div>
     <div class="postContent">
         <h1>{post.header}</h1>
-        <h1>{post.body}</h1>
+        <p>{post.body}</p>
         {#if post.image}
-            <img src={post.image} alt="" srcset="" />
+            <div
+                class="postImage"
+                style={"background-image: url(" + post.image + ");"}
+                on:click={showImage(post.image)}
+            />
         {/if}
-        <h1>{post.upvotes}</h1>
     </div>
-    <div class="commentForm">
-        <form action="" />
+    <div class="buttons">
+        <button>
+            <span>
+                {post.upvotes}
+                <Fa icon={faHeart} />
+            </span>
+        </button>
+        <button>
+            <span on:click={ChangeFormState}>
+                <Fa icon={faComment} />
+            </span>
+        </button>
     </div>
+    {#if formOpen}
+        <div class="commentForm">
+            <p>forma otevřena</p>
+        </div>
+    {/if}
     <div class="comments">komenty</div>
 </div>
 
@@ -196,5 +215,45 @@
 
     div.post div.postTop div.userData div.userInfo a:hover {
         color: var(--green-color);
+    }
+
+    div.post div.postContent {
+        padding-bottom: 1rem;
+    }
+
+    div.post div.buttons button {
+        background-color: transparent;
+        border: none;
+        transition: 0.1s;
+        cursor: pointer;
+    }
+
+    div.post div.buttons button span {
+        color: var(--white-color);
+        font-size: 1.2rem;
+        padding: 0 1rem;
+    }
+
+    div.post div.buttons button:hover > span {
+        color: var(--green-color);
+    }
+
+    div.post div.postContent h1 {
+        font-family: AlteHaasBold;
+        color: var(--white-color);
+        padding: 1rem 0;
+        word-break: break-word;
+    }
+
+    div.post div.postContent p {
+        word-break: break-word;
+    }
+
+    div.post div.postContent div.postImage {
+        width: 100%;
+        height: 40rem;
+        background-position: center;
+        background-size: cover;
+        margin: 1rem 0;
     }
 </style>
