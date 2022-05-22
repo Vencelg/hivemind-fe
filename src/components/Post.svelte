@@ -5,8 +5,10 @@
     import Fa from "svelte-fa";
     import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
     import { faWrench } from "@fortawesome/free-solid-svg-icons";
+    import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 
     export let post;
+    let isOwner = false;
 
     const dispatch = createEventDispatcher();
     let formOpen = false;
@@ -110,59 +112,89 @@
     };
 </script>
 
-<div>
-    <h1>{post.header}</h1>
-    <h1>{post.body}</h1>
-    {#if post.image}
-        <img src={post.image} alt="" srcset="" />
-    {/if}
-    <h1>{post.upvotes}</h1>
-    <button on:click={AddTestComment(post.id)}>AddTestComment</button>
-
-    {#each post.comments as comment}
-        <div>
-            <h3>{comment.id}</h3>
-            <h3>{comment.upvotes}</h3>
-            <h2>
-                {comment.comment_content}<span
-                    on:click={DeleteComment(comment.id, comment.post_id)}
-                    ><Fa icon={faTrashCan} /></span
-                >
-            </h2>
-            <h2>
-                {comment.user.name}<span
-                    on:click={UpdateComment(post.id, comment.id)}
-                    ><Fa icon={faWrench} /></span
-                >
-            </h2>
-            <button on:click={AddTestResponse(post.id, comment.id)}
-                >AddTestResponse</button
-            >
-            <div style="border: 1px black solid;">
-                {#each comment.responses as response}
-                    <h3>{response.id}</h3>
-                    <h3>{response.upvotes}</h3>
-                    <h2>
-                        {response.response_content}<span
-                            on:click={DeleteResponse(
-                                response.id,
-                                post.id,
-                                comment.id
-                            )}><Fa icon={faTrashCan} /></span
-                        >
-                    </h2>
-                    <h2>
-                        {response.user.name}<span
-                            on:click={UpdateResponse(
-                                response.id,
-                                comment.id,
-                                post.id
-                            )}><Fa icon={faWrench} /></span
-                        >
-                    </h2>
-                {/each}
+<div class="post">
+    <div class="postTop">
+        <div class="userData">
+            <div
+                class="userImage"
+                style={"background-image: url(" +
+                    post.user.profile_picture +
+                    ");"}
+            />
+            <div class="userInfo">
+                <a href={"#/profile/" + post.user.id}>{post.user.name}</a>
+                <p>{post.created_at}</p>
             </div>
         </div>
-    {/each}
-    <div />
+        {#if true}
+            <span class="settings">
+                <Fa icon={faEllipsisVertical} />
+            </span>
+        {/if}
+    </div>
+    <div class="postContent">
+        <h1>{post.header}</h1>
+        <h1>{post.body}</h1>
+        {#if post.image}
+            <img src={post.image} alt="" srcset="" />
+        {/if}
+        <h1>{post.upvotes}</h1>
+    </div>
+    <div class="commentForm">
+        <form action="" />
+    </div>
+    <div class="comments">komenty</div>
 </div>
+
+<style>
+    div.post {
+        background-color: var(--nav-bg-color);
+        margin-bottom: 1rem;
+        padding: 10px;
+        border-radius: 20px;
+    }
+
+    div.post div.postTop {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    div.post div.postTop span {
+        color: var(--white-color);
+        transition: 0.1s;
+        cursor: pointer;
+    }
+
+    div.post div.postTop span:hover {
+        color: var(--green-color);
+    }
+
+    div.post div.postTop div.userData {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    div.post div.postTop div.userData div.userImage {
+        background-position: center;
+        background-size: cover;
+        height: 3rem;
+        width: 3rem;
+        background-color: var(--white-color);
+        border-radius: 50%;
+    }
+
+    div.post div.postTop div.userData div.userInfo {
+        padding-left: 1rem;
+    }
+
+    div.post div.postTop div.userData div.userInfo a {
+        color: var(--white-color);
+        transition: 0.2s;
+        text-decoration: none;
+    }
+
+    div.post div.postTop div.userData div.userInfo a:hover {
+        color: var(--green-color);
+    }
+</style>

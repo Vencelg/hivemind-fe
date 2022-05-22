@@ -6,12 +6,15 @@
     import Post from "../components/Post.svelte";
     import Fa from "svelte-fa";
     import { faCog } from "@fortawesome/free-solid-svg-icons";
+    import { toast } from "@zerodevx/svelte-toast";
 
     export let params;
+    let paramsOld = params;
     let userProfile = null;
     let userFriends = [];
 
     onMount(async () => {
+
         const token = "Bearer " + window.localStorage.getItem("token");
 
         if (window.localStorage.getItem("token")) {
@@ -42,6 +45,12 @@
             push("/login");
         }
 
+        getUser();
+    });
+
+    const getUser = async () => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
         const res = await fetch("http://127.0.0.1:8000/api/auth/userProfile", {
             method: "POST",
             body: JSON.stringify({
@@ -65,9 +74,18 @@
             userProfile = resultFinal.profile;
             console.log(userProfile);
         } else {
-            console.log("user not found");
+            toast.push("User doesn't exist", {
+                classes: ["dangerNoBar"],
+            });
+            push("/");
         }
-    });
+
+        paramsOld = params;
+    };
+
+    $: if (params.user != paramsOld.user) {
+        getUser();
+    }
 </script>
 
 {#if userProfile}
@@ -96,24 +114,28 @@
             <div class="friends">
                 {#each userProfile.friends_of_this_user as friend}
                     <div>
-                        <div
-                            class="friendImage"
-                            style="background-image: url({friend.profile_picture});"
-                        />
-                        <p>
-                            {friend.name}
-                        </p>
+                        <a href={"#/profile/" + friend.id}>
+                            <div
+                                class="friendImage"
+                                style="background-image: url({friend.profile_picture});"
+                            />
+                            <p>
+                                {friend.name}
+                            </p>
+                        </a>
                     </div>
                 {/each}
                 {#each userProfile.this_user_friend_of as friend}
                     <div>
-                        <div
-                            class="friendImage"
-                            style="background-image: url({friend.profile_picture});"
-                        />
-                        <p>
-                            {friend.name}
-                        </p>
+                        <a href={"#/profile/" + friend.id}>
+                            <div
+                                class="friendImage"
+                                style="background-image: url({friend.profile_picture});"
+                            />
+                            <p>
+                                {friend.name}
+                            </p>
+                        </a>
                     </div>
                 {/each}
             </div>
@@ -146,6 +168,7 @@
     main {
         width: 80%;
         margin: auto;
+        padding-bottom: 1rem;
     }
     div.header {
         display: flex;
@@ -163,6 +186,7 @@
         background-position: center;
         background-size: cover;
         border-radius: 50%;
+        background-color: var(--white-color);
     }
 
     div.header div.box div.userData {
@@ -193,14 +217,34 @@
     }
 
     div.content div.friends {
+        padding: 10px;
+        padding-bottom: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        gap: 10px;
+        height: calc(100vw / 3);
+        /* min-width: 30rem; */
         background-color: var(--nav-bg-color);
         border-radius: 20px;
     }
 
-    div.content div.friends div.friendImage {
+    div.content div.friends div {
+        height: calc(100vw / 12);
+    }
+
+    div.content div.friends a div.friendImage {
         background-size: cover;
         background-position: center;
-        width: 5rem;
-        height: 5rem;
+        width: calc(100vw / 12);
+        height: 100%;
+        background-color: var(--white-color);
+        border-radius: 10px;
+    }
+
+    div.content div.friends a p {
+        color: var(--white-color);
+        text-decoration: none;
+        font-size: calc(100vw / 120);
     }
 </style>

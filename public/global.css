@@ -4,6 +4,10 @@
 	box-sizing: border-box;
 }
 
+a {
+	text-decoration: none;
+}
+
 :root {
 	--bg-color: #10131d;
 	--nav-bg-color: #1f2538;
@@ -41,4 +45,8 @@ body {
 input, button, select, textarea {
 	font-family: inherit;
 	font-size: inherit;
+}
+
+p {
+	color: var(--white-color);
 }
