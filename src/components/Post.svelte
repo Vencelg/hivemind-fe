@@ -8,8 +8,13 @@
     import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
     import { faHeart } from "@fortawesome/free-solid-svg-icons";
     import { faComment } from "@fortawesome/free-solid-svg-icons";
+    import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
     import { getContext } from "svelte";
     import ImagePopup from "./ImagePopup.svelte";
+    import Time from "svelte-time";
+    import commentHandler from "../scripts/commentHandler";
+    import { toast } from "@zerodevx/svelte-toast";
+    import Comment from "./Comment.svelte";
 
     const { open } = getContext("simple-modal");
     const showImage = (imageSrc) => open(ImagePopup, { imageSrc: imageSrc });
@@ -19,12 +24,11 @@
 
     const dispatch = createEventDispatcher();
     let formOpen = false;
-    let formDisplay = "none";
     let header = "";
     let body = "";
     let files = null;
     let upvotes = null;
-    let imageInput = null;
+    let comment_content = "";
     let headerErrors = [];
     let bodyErrors = [];
     let upvoteErrors = [];
@@ -60,14 +64,23 @@
         dispatch("post-updated", formData);
     };
 
-    const AddTestComment = (id) => {
+    const AddComment = (id) => {
         const formData = new FormData();
 
         formData.append("user_id", $user.id);
         formData.append("post_id", id);
-        formData.append("comment_content", "Toto je testovací komentář");
+        formData.append("comment_content", comment_content);
 
-        dispatch("comment-added", formData);
+        if (comment_content == null || comment_content == "") {
+            toast.push("Comment field is empty", {
+                classes: ["dangerNoBar"],
+            });
+            return;
+        }
+
+        commentHandler(formData);
+
+        comment_content = "";
     };
 
     const UpdateComment = (id, commentId) => {
@@ -124,7 +137,12 @@
             />
             <div class="userInfo">
                 <a href={"#/profile/" + post.user.id}>{post.user.name}</a>
-                <p>{post.created_at}</p>
+                <p>
+                    <Time
+                        timestamp={post.created_at}
+                        format="ddd, DD MMM YYYY HH:mm"
+                    />
+                </p>
             </div>
         </div>
         {#if true}
@@ -159,10 +177,32 @@
     </div>
     {#if formOpen}
         <div class="commentForm">
-            <p>forma otevřena</p>
+            <form on:submit|preventDefault={AddComment(post.id)}>
+                <div
+                    class="formUserImage"
+                    style={"background-image: url(" +
+                        post.user.profile_picture +
+                        ");"}
+                />
+                <input
+                    type="text"
+                    name="comment_content"
+                    id="comment_content"
+                    bind:value={comment_content}
+                />
+                <button type="submit">
+                    <Fa icon={faPaperPlane} />
+                </button>
+            </form>
         </div>
     {/if}
-    <div class="comments">komenty</div>
+    {#if post.comments}
+        <div class="comments">
+            {#each post.comments as comment}
+                <Comment {comment} />
+            {/each}
+        </div>
+    {/if}
 </div>
 
 <style>
@@ -255,5 +295,52 @@
         background-position: center;
         background-size: cover;
         margin: 1rem 0;
+    }
+
+    div.post div.commentForm {
+        margin: 1rem 0;
+    }
+
+    div.post div.commentForm form {
+        display: flex;
+        align-items: center;
+    }
+
+    div.post div.commentForm div.formUserImage {
+        background-position: center;
+        background-size: cover;
+        height: 3rem;
+        width: 3rem;
+        border-radius: 50%;
+        background-color: var(--white-color);
+        margin-right: 10px;
+    }
+
+    div.post div.commentForm form input {
+        display: block;
+        border: none;
+        outline: none;
+        height: 40px;
+        width: 90%;
+        background-color: rgba(255, 255, 255, 0.07);
+        padding: 0 10px;
+        font-size: 14px;
+        font-weight: 300;
+        border-radius: 3px 0 0 3px;
+        color: var(--white-color);
+    }
+
+    div.post div.commentForm form button {
+        border: none;
+        background-color: rgba(255, 255, 255, 0.07);
+        border-radius: 0 3px 3px 0;
+        height: 40px;
+        padding-right: 10px;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+
+    div.post div.commentForm form button:hover {
+        color: var(--green-color);
     }
 </style>
