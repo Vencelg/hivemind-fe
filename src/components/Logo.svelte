@@ -3,7 +3,7 @@
 </script>
 
 <div class="box">
-    <p style="font-size: {size}rem;">Vertel<span>.</span></p>
+    <a href="#/" style="font-size: {size}rem;">Vertel<span>.</span></a>
 </div>
 
 <style>
@@ -11,12 +11,12 @@
         text-align: center;
     }
 
-    .box p {
+    .box a {
         font-family: AlteHaasRegular;
         color: #e2e2e2;
     }
 
-    .box p span{
+    .box a span{
         color: #13e235;
     }
 </style>

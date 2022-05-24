@@ -16,11 +16,8 @@
                 isOpen = !isOpen;
             }}
         >
-            <img
-                src={$user.profile_picture}
-                width="45px"
-                height="45px"
-                alt="Users profile"
+            <div class="profileImage"
+            style="{"background-image: url("+ $user.profile_picture +");"}"
             />
             <span id="mobileSpan"><Fa icon={faCaretDown} /></span>
             <p>{$user.name}<span><Fa icon={faCaretDown} /></span></p>
@@ -105,8 +102,13 @@
         cursor: pointer;
     }
 
-    .dropdownBox img {
+    .dropdownBox div.profileImage {
         border-radius: 2rem;
+        width: 3rem;
+        height: 3rem;
+        background-position: center;
+        background-size: cover;
+        background-color: var(--white-color);
     }
 
     .dropdownBox div p {

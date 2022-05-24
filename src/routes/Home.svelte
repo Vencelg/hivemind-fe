@@ -6,6 +6,8 @@
     import AddPostForm from "../components/AddPostForm.svelte";
     import AllPosts from "../components/AllPosts.svelte";
     import Navigation from "../components/Navigation.svelte";
+    import Fa from "svelte-fa";
+    import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
     let errors = null;
     let verified = false;
@@ -444,7 +446,7 @@
 
 {#if $user && verified}
     <Navigation />
-<!--     <main>
+    <!--     <main>
         <h1>Home page</h1>
         <AddPostForm on:post-added={handlePostSubmit} />
         <AllPosts
@@ -462,7 +464,25 @@
     <main>
         <h1>You need to verify first</h1>
     </main> -->
+    {:else}
+    <div class="loading">
+        <span>
+            <Fa icon={faSpinner} spin />
+        </span>
+    </div>
 {/if}
 
 <style>
+    div.loading {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    div.loading span {
+        font-size: 3rem;
+        color: var(--green-color);
+    }
 </style>
