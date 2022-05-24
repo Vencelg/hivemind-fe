@@ -176,7 +176,6 @@
         if (resUpdate.ok) {
             for (let i = 0; i < $posts.length; i++) {
                 if ($posts[i].id == resultFinalUpdate.post.id) {
-                    console.log($posts[i]);
                     $posts[i] = resultFinalUpdate.post;
                 }
             }

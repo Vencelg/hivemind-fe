@@ -11,19 +11,21 @@
     import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
     import { getContext } from "svelte";
     import ImagePopup from "./ImagePopup.svelte";
+    import UpdatePostModal from "./UpdatePostModal.svelte";
     import Time from "svelte-time";
-    import commentHandler from "../scripts/commentHandler";
     import { toast } from "@zerodevx/svelte-toast";
     import Comment from "./Comment.svelte";
 
     const { open } = getContext("simple-modal");
     const showImage = (imageSrc) => open(ImagePopup, { imageSrc: imageSrc });
+    const showUpdateForm = (post) => open(UpdatePostModal, {post});
 
     export let post;
     let isOwner = false;
 
     const dispatch = createEventDispatcher();
     let formOpen = false;
+    let dropdownOpen = false;
     let header = "";
     let body = "";
     let files = null;
@@ -37,10 +39,15 @@
         formOpen = !formOpen;
     };
 
+    const ChangeDropdownState = () => {
+        dropdownOpen = !dropdownOpen;
+    };
+
     const DeletePost = (postId) => {
         const id = postId;
         dispatch("post-deleted", id);
     };
+
     const UpdatePost = (postId) => {
         const id = postId;
         let errorsAdded = false;
@@ -78,7 +85,7 @@
             return;
         }
 
-        commentHandler(formData);
+        dispatch("comment-added", formData);
 
         comment_content = "";
     };
@@ -94,19 +101,12 @@
         dispatch("comment-updated", formData);
     };
 
-    const DeleteComment = (id, postId) => {
-        dispatch("comment-deleted", { id, postId });
+    const DeleteComment = (e) => {
+        dispatch("comment-deleted", e.detail);
     };
 
-    const AddTestResponse = (id, commentId) => {
-        const formData = new FormData();
-
-        formData.append("user_id", $user.id);
-        formData.append("post_id", id);
-        formData.append("comment_id", commentId);
-        formData.append("response_content", "Toto je testovací odpověď");
-
-        dispatch("response-added", formData);
+    const AddResponse = (e) => {
+        dispatch("response-added", e.detail);
     };
 
     const UpdateResponse = (id, commentId, postId) => {
@@ -121,8 +121,8 @@
         dispatch("response-updated", formData);
     };
 
-    const DeleteResponse = (id, postId, commentId) => {
-        dispatch("response-deleted", { id, postId, commentId });
+    const DeleteResponse = (e) => {
+        dispatch("response-deleted", e.detail);
     };
 </script>
 
@@ -145,10 +145,22 @@
                 </p>
             </div>
         </div>
-        {#if true}
-            <span class="settings">
-                <Fa icon={faEllipsisVertical} />
-            </span>
+        {#if $user.id == post.user_id}
+            <div style="position: relative;">
+                <span
+                    class:active={dropdownOpen}
+                    on:click={ChangeDropdownState}
+                    class="settings"
+                >
+                    <Fa icon={faEllipsisVertical} />
+                </span>
+                {#if dropdownOpen}
+                    <div class="dropdown">
+                        <span on:click="{showUpdateForm(post)}"><Fa icon={faWrench} /></span>
+                        <span on:click="{DeletePost(post.id)}"><Fa icon={faTrashCan} /></span>
+                    </div>
+                {/if}
+            </div>
         {/if}
     </div>
     <div class="postContent">
@@ -170,7 +182,8 @@
             </span>
         </button>
         <button>
-            <span on:click={ChangeFormState}>
+            <span class:active={formOpen} on:click={ChangeFormState}>
+                {post.comments.length}
                 <Fa icon={faComment} />
             </span>
         </button>
@@ -181,13 +194,14 @@
                 <div
                     class="formUserImage"
                     style={"background-image: url(" +
-                        post.user.profile_picture +
+                        $user.profile_picture +
                         ");"}
                 />
                 <input
                     type="text"
                     name="comment_content"
                     id="comment_content"
+                    placeholder="Write your comment..."
                     bind:value={comment_content}
                 />
                 <button type="submit">
@@ -195,17 +209,35 @@
                 </button>
             </form>
         </div>
-    {/if}
-    {#if post.comments}
-        <div class="comments">
-            {#each post.comments as comment}
-                <Comment {comment} />
-            {/each}
-        </div>
+        {#if post.comments}
+            <div class="comments">
+                {#each post.comments as comment}
+                    <Comment {comment} on:response-added={AddResponse} on:comment-deleted={DeleteComment} on:response-deleted={DeleteResponse} />
+                {/each}
+            </div>
+        {/if}
     {/if}
 </div>
 
 <style>
+    div.dropdown {
+        background-color: var(--comment-color);
+        position: absolute;
+        right: 0;
+        width: 5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .active {
+        color: var(--green-color) !important;
+    }
+
     div.post {
         background-color: var(--nav-bg-color);
         margin-bottom: 1rem;
@@ -338,6 +370,7 @@
         padding-right: 10px;
         cursor: pointer;
         transition: 0.1s;
+        color: var(--white-color);
     }
 
     div.post div.commentForm form button:hover {

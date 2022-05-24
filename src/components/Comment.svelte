@@ -3,14 +3,61 @@
     import { posts } from "../stores/posts.js";
     import { user } from "../stores/store.js";
     import Fa from "svelte-fa";
-    import { faL, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+    import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
     import { faWrench } from "@fortawesome/free-solid-svg-icons";
     import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
     import { faHeart } from "@fortawesome/free-solid-svg-icons";
+    import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
     import { faComment } from "@fortawesome/free-solid-svg-icons";
+    import Response from "./Response.svelte";
+    import { toast } from "@zerodevx/svelte-toast";
+    import UpdateCommentModal from "./UpdateCommentModal.svelte";
+    import { getContext } from "svelte";
 
     export let comment;
+    const dispatch = createEventDispatcher();
     let isOwner = false;
+    let dropdownOpen = false;
+    let formOpen = false;
+    let response_content = "";
+
+    const { open } = getContext("simple-modal");
+    const showUpdateForm = (comment) => open(UpdateCommentModal, { comment });
+
+    const ChangeFormState = () => {
+        formOpen = !formOpen;
+    };
+
+    const ChangeDropdownState = () => {
+        dropdownOpen = !dropdownOpen;
+    };
+
+    const DeleteComment = (id, postId) => {
+        dispatch("comment-deleted", { id, postId });
+    };
+
+    const DeleteResponse = (e) => {
+        dispatch("response-deleted", e.detail);
+    };
+
+    const AddResponse = (id, commentId) => {
+        const formData = new FormData();
+        console.log("coment");
+        formData.append("user_id", $user.id);
+        formData.append("post_id", id);
+        formData.append("comment_id", commentId);
+        formData.append("response_content", response_content);
+
+        if (response_content == null || response_content == "") {
+            toast.push("Response field is empty", {
+                classes: ["dangerNoBar"],
+            });
+            return;
+        }
+
+        dispatch("response-added", formData);
+        response_content = "";
+    };
 </script>
 
 <div class="comment">
@@ -31,28 +78,77 @@
     <div class="settings">
         <button>
             <span>
-                {comment.upvotes} <Fa icon={faHeart} />
+                {comment.upvotes}
+                <Fa icon={faHeart} />
             </span>
         </button>
-        <button>
-            <span>
+        <button on:click={ChangeFormState}>
+            <span class:active={formOpen}>
+                {comment.responses.length}
                 <Fa icon={faComment} />
             </span>
         </button>
 
         {#if comment.user.id == $user.id}
             <button>
-                <span>
+                <span
+                    class:active={dropdownOpen}
+                    on:click={ChangeDropdownState}
+                >
                     <Fa icon={faEllipsisVertical} />
                 </span>
             </button>
+
+            {#if dropdownOpen}
+                <span class="dropdown" on:click={showUpdateForm(comment)}
+                    ><Fa icon={faWrench} /></span
+                >
+                <span
+                    on:click={DeleteComment(comment.id, comment.post_id)}
+                    class="dropdown"><Fa icon={faTrashCan} /></span
+                >
+            {/if}
         {/if}
     </div>
-    <div class="responses">
-        {#each comment.responses as response}
-             <p>lmao</p>
-        {/each}
-    </div>
+    {#if formOpen}
+        <div class="responseForm">
+            <form
+                on:submit|preventDefault={AddResponse(
+                    comment.post_id,
+                    comment.id
+                )}
+            >
+                <div
+                    class="formUserImage"
+                    style={"background-image: url(" +
+                        $user.profile_picture +
+                        ");"}
+                />
+                <input
+                    type="text"
+                    name="response_content"
+                    id="response_content"
+                    placeholder="Write your response..."
+                    bind:value={response_content}
+                />
+                <button type="submit">
+                    <Fa icon={faPaperPlane} />
+                </button>
+            </form>
+        </div>
+
+        <div class="responses">
+            {#if comment.responses}
+                {#each comment.responses as response}
+                    <Response
+                        {response}
+                        postId={comment.post_id}
+                        on:response-deleted={DeleteResponse}
+                    />
+                {/each}
+            {/if}
+        </div>
+    {/if}
     <!-- <h2>
         {comment.comment_content}<span
             on:click={DeleteComment(comment.id, comment.post_id)}
@@ -83,17 +179,31 @@
             </h2>
         {/each} 
     </div>-->
-
 </div>
 
 <style>
+    span.dropdown {
+        color: var(--white-color);
+        padding-left: 10px;
+        margin: 0;
+        transition: 0.1s;
+        cursor: pointer;
+    }
+
+    span.dropdown:hover {
+        color: var(--green-color);
+    }
+
+    .active {
+        color: var(--green-color) !important;
+    }
 
     div.comment {
         display: flex;
         flex-direction: column;
     }
 
-    div.comment div.box{
+    div.comment div.box {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -121,6 +231,7 @@
 
     div.comment div.settings {
         padding-left: 4rem;
+        position: relative;
     }
 
     div.comment div.settings button span {
@@ -145,5 +256,61 @@
         height: 3rem;
         width: 3rem;
         border-radius: 50%;
+    }
+
+    div.comment div.responseForm {
+        margin: 1rem 0;
+    }
+
+    div.comment div.responseForm form {
+        display: flex;
+        align-items: center;
+        width: 95%;
+        float: right;
+    }
+
+    div.comment div.responseForm div.formUserImage {
+        background-position: center;
+        background-size: cover;
+        height: 3rem;
+        width: 3rem;
+        border-radius: 50%;
+        background-color: var(--white-color);
+        margin-right: 10px;
+    }
+
+    div.comment div.responseForm form input {
+        display: block;
+        border: none;
+        outline: none;
+        height: 40px;
+        width: 90%;
+        background-color: rgba(255, 255, 255, 0.07);
+        padding: 0 10px;
+        font-size: 14px;
+        font-weight: 300;
+        border-radius: 3px 0 0 3px;
+        color: var(--white-color);
+    }
+
+    div.comment div.responseForm form button {
+        border: none;
+        color: var(--white-color);
+        background-color: rgba(255, 255, 255, 0.07);
+        border-radius: 0 3px 3px 0;
+        height: 40px;
+        padding-right: 10px;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+
+    div.comment div.responseForm form button:hover {
+        color: var(--green-color);
+    }
+
+    div.responses {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
     }
 </style>

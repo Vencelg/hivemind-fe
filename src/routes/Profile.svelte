@@ -2,19 +2,24 @@
     import { onMount } from "svelte";
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
+    import { userProfile } from "../stores/userProfile.js";
+    import { posts } from "../stores/posts.js";
     import Navigation from "../components/Navigation.svelte";
     import Post from "../components/Post.svelte";
     import Fa from "svelte-fa";
     import { faCog } from "@fortawesome/free-solid-svg-icons";
+    import { getContext } from "svelte";
+    import UpdateUserModal from "../components/UpdateUserModal.svelte";
     import { toast } from "@zerodevx/svelte-toast";
 
     export let params;
     let paramsOld = params;
-    let userProfile = null;
     let userFriends = [];
 
-    onMount(async () => {
+    const { open } = getContext("simple-modal");
+    const showUpdateForm = () => open(UpdateUserModal);
 
+    onMount(async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
         if (window.localStorage.getItem("token")) {
@@ -71,8 +76,8 @@
         console.log(resultFinal);
 
         if (res.ok) {
-            userProfile = resultFinal.profile;
-            console.log(userProfile);
+            $userProfile = resultFinal.profile;
+            $posts = resultFinal.profile.posts;
         } else {
             toast.push("User doesn't exist", {
                 classes: ["dangerNoBar"],
@@ -83,36 +88,223 @@
         paramsOld = params;
     };
 
+    const handlePostDelete = async (e) => {
+        const details = e.detail;
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch("http://127.0.0.1:8000/api/posts/" + details, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            $posts = $posts.filter((post) => post.id != details);
+        }
+    };
+
+    const handleCommentSubmit = async (e) => {
+        const details = e.detail;
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch("http://127.0.0.1:8000/api/comments/", {
+            method: "POST",
+            body: details,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        if (res.ok) {
+            for (let i = 0; i < $posts.length; i++) {
+                console.log($posts[i]);
+                if ($posts[i].id == resultFinal.comment.post_id) {
+                    console.log($posts[i]);
+                    $posts[i].comments = [
+                        ...$posts[i].comments,
+                        resultFinal.comment,
+                    ];
+                }
+            }
+        }
+    };
+
+    const handleResponseSubmit = async (e) => {
+        const details = e.detail;
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch("http://127.0.0.1:8000/api/responses/", {
+            method: "POST",
+            body: details,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        if (res.ok) {
+            for (let i = 0; i < $posts.length; i++) {
+                if ($posts[i].id == details.get("post_id")) {
+                    for (let j = 0; j < $posts[i].comments.length; j++) {
+                        if (
+                            $posts[i].comments[j].id ==
+                            details.get("comment_id")
+                        ) {
+                            $posts[i].comments[j].responses = [
+                                ...$posts[i].comments[j].responses,
+                                resultFinal.response,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const handleCommentDelete = async (e) => {
+        const details = e.detail;
+        console.log(details);
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/comments/" + details.id,
+            {
+                method: "DELETE",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            for (let i = 0; i < $posts.length; i++) {
+                for (let j = 0; j < $posts[i].comments.length; j++) {
+                    if ($posts[i].comments[j].id == details.id) {
+                        console.log($posts[i].comments);
+                        let temp = $posts;
+                        temp[i].comments.splice(j, 1);
+                        $posts = temp;
+                    }
+                }
+            }
+        }
+    };
+
+    const handleResponseDelete = async (e) => {
+        const details = e.detail;
+        console.log(details);
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/responses/" + details.id,
+            {
+                method: "DELETE",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            for (let i = 0; i < $posts.length; i++) {
+                if ($posts[i].id == details.postId) {
+                    for (let j = 0; j < $posts[i].comments.length; j++) {
+                        if ($posts[i].comments[j].id == details.commentId) {
+                            for (
+                                let k = 0;
+                                k < $posts[i].comments[j].responses.length;
+                                k++
+                            ) {
+                                if (
+                                    $posts[i].comments[j].responses[k].id ==
+                                    details.id
+                                ) {
+                                    let temp = $posts;
+                                    temp[i].comments[j].responses.splice(k, 1);
+                                    $posts = temp;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     $: if (params.user != paramsOld.user) {
         getUser();
     }
 </script>
 
-{#if userProfile}
+{#if $userProfile}
     <Navigation />
     <main>
         <div class="header">
             <div class="box">
                 <div
-                    style="background-image: url({userProfile.profile_picture});"
+                    style="background-image: url({$userProfile.profile_picture});"
                     class="image"
                 />
                 <div class="userData">
                     <p class="bigP">
-                        {userProfile.name}
-                        {#if $user.id == userProfile.id}
-                            <span class="cog">
+                        {$userProfile.name}
+                        {#if $user.id == $userProfile.id}
+                            <span class="cog" on:click={showUpdateForm}>
                                 <Fa class="cog" icon={faCog} />
                             </span>
                         {/if}
                     </p>
-                    <p class="smallP">@{userProfile.username}</p>
+                    <p class="smallP">@{$userProfile.username}</p>
                 </div>
             </div>
         </div>
         <div class="content">
             <div class="friends">
-                {#each userProfile.friends_of_this_user as friend}
+                {#each $userProfile.friends_of_this_user as friend}
                     <div>
                         <a href={"#/profile/" + friend.id}>
                             <div
@@ -125,7 +317,7 @@
                         </a>
                     </div>
                 {/each}
-                {#each userProfile.this_user_friend_of as friend}
+                {#each $userProfile.this_user_friend_of as friend}
                     <div>
                         <a href={"#/profile/" + friend.id}>
                             <div
@@ -140,8 +332,15 @@
                 {/each}
             </div>
             <div class="posts">
-                {#each userProfile.posts as post}
-                    <Post {post} />
+                {#each $posts as post}
+                    <Post
+                        {post}
+                        on:comment-added={handleCommentSubmit}
+                        on:response-added={handleResponseSubmit}
+                        on:post-deleted={handlePostDelete}
+                        on:comment-deleted={handleCommentDelete}
+                        on:response-deleted={handleResponseDelete}
+                    />
                 {:else}
                     <p>User has no posts</p>
                 {/each}
