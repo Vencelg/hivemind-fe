@@ -78,6 +78,77 @@
     const DeleteResponse = (e) => {
         dispatch("response-deleted", e.detail);
     };
+
+    const decideLikedStatus = (post) => {
+        for (let i = 0; i < post.likes.length; i++) {
+            if (post.likes[i].id == $user.id) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handlePostLike = async (postTemp) => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/posts/like/" + postTemp.id,
+            {
+                method: "GET",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            post.likes_count += 1;
+            post.likes = resultFinal.likes;
+        }
+    };
+
+    const handlePostDislike = async (postTemp) => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/posts/dislike/" + postTemp.id,
+            {
+                method: "DELETE",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            post.likes_count -= 1;
+            for (let i = 0; i < post.likes.length; i++) {
+                if (post.likes[i].id == $user.id) {
+                    post.likes.splice(i, 1);
+                }
+            }
+        }
+    };
 </script>
 
 <div class="post">
@@ -134,7 +205,16 @@
     </div>
     <div class="buttons">
         <button>
-            <span>
+            <span
+                class:liked={decideLikedStatus(post)}
+                on:click={() => {
+                    if (decideLikedStatus(post)) {
+                        handlePostDislike(post);
+                    } else {
+                        handlePostLike(post);
+                    }
+                }}
+            >
                 {post.likes_count}
                 <Fa icon={faHeart} />
             </span>
@@ -183,6 +263,10 @@
 </div>
 
 <style>
+    span.liked {
+        color: var(--green-color) !important;
+    }
+
     div.dropdown {
         background-color: var(--comment-color);
         position: absolute;

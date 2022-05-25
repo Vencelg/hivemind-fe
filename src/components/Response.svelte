@@ -10,7 +10,8 @@
     import { getContext } from "svelte";
 
     const { open } = getContext("simple-modal");
-    const showUpdateForm = (response, postId) => open(UpdateResponseModal, { response, postId });
+    const showUpdateForm = (response, postId) =>
+        open(UpdateResponseModal, { response, postId });
 
     export let response;
     export let postId;
@@ -23,6 +24,77 @@
 
     const DeleteResponse = (id, postId, commentId) => {
         dispatch("response-deleted", { id, postId, commentId });
+    };
+
+    const decideLikedStatus = (response) => {
+        for (let i = 0; i < response.likes.length; i++) {
+            if (response.likes[i].id == $user.id) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleResponseLike = async (responseTemp) => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/responses/like/" + responseTemp.id,
+            {
+                method: "GET",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            response.likes_count += 1;
+            response.likes = resultFinal.likes;
+        }
+    };
+
+    const handleResponseDislike = async (responseTemp) => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/responses/dislike/" + responseTemp.id,
+            {
+                method: "DELETE",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            response.likes_count -= 1;
+            for (let i = 0; i < response.likes.length; i++) {
+                if (response.likes[i].id == $user.id) {
+                    response.likes.splice(i, 1);
+                }
+            }
+        }
     };
 </script>
 
@@ -43,7 +115,16 @@
     </div>
     <div class="settings">
         <button>
-            <span>
+            <span
+                class:liked={decideLikedStatus(response)}
+                on:click={() => {
+                    if (decideLikedStatus(response)) {
+                        handleResponseDislike(response);
+                    } else {
+                        handleResponseLike(response);
+                    }
+                }}
+            >
                 {response.likes_count}
                 <Fa icon={faHeart} />
             </span>
@@ -60,7 +141,11 @@
             </button>
 
             {#if dropdownOpen}
-                <span class="dropdown" on:click={showUpdateForm(response, postId)} ><Fa icon={faWrench} /></span>
+                <span
+                    class="dropdown"
+                    on:click={showUpdateForm(response, postId)}
+                    ><Fa icon={faWrench} /></span
+                >
                 <span
                     on:click={DeleteResponse(
                         response.id,
@@ -72,39 +157,13 @@
             {/if}
         {/if}
     </div>
-    <!-- <h2>
-        {response.response_content}<span
-            on:click={Deleteresponse(response.id, response.post_id)}
-            ><Fa icon={faTrashCan} /></span
-        >
-    </h2>
-    <h2>
-        {response.user.name}<span on:click={Updateresponse(post.id, response.id)}
-            ><Fa icon={faWrench} /></span
-        >
-    </h2> -->
-
-    <!-- <div style="border: 1px black solid;">
-        {#each response.responses as response}
-            <h3>{response.id}</h3>
-            <h3>{response.upvotes}</h3>
-            <h2>
-                {response.response_content}<span
-                    on:click={DeleteResponse(response.id, post.id, response.id)}
-                    ><Fa icon={faTrashCan} /></span
-                >
-            </h2>
-            <h2>
-                {response.user.name}<span
-                    on:click={UpdateResponse(response.id, response.id, post.id)}
-                    ><Fa icon={faWrench} /></span
-                >
-            </h2>
-        {/each} 
-    </div>-->
 </div>
 
 <style>
+    span.liked {
+        color: var(--green-color) !important;
+    }
+
     span.dropdown {
         color: var(--white-color);
         padding-left: 10px;

@@ -58,6 +58,77 @@
         dispatch("response-added", formData);
         response_content = "";
     };
+
+    const decideLikedStatus = (comment) => {
+        for (let i = 0; i < comment.likes.length; i++) {
+            if (comment.likes[i].id == $user.id) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleCommentLike = async (commentTemp) => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/comments/like/" + commentTemp.id,
+            {
+                method: "GET",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            comment.likes_count += 1;
+            comment.likes = resultFinal.likes;
+        }
+    };
+
+    const handleCommentDislike = async (commentTemp) => {
+        const token = "Bearer " + window.localStorage.getItem("token");
+
+        const res = await fetch(
+            "http://127.0.0.1:8000/api/comments/dislike/" + commentTemp.id,
+            {
+                method: "DELETE",
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-type": "application/json",
+                    Authorization: token,
+                },
+                mode: "cors",
+            }
+        );
+
+        const json = await res.json();
+        const result = JSON.stringify(json);
+        let resultFinal = await JSON.parse(result);
+
+        console.log(resultFinal);
+
+        if (res.ok) {
+            comment.likes_count -= 1;
+            for (let i = 0; i < comment.likes.length; i++) {
+                if (comment.likes[i].id == $user.id) {
+                    comment.likes.splice(i, 1);
+                }
+            }
+        }
+    };
 </script>
 
 <div class="comment">
@@ -77,7 +148,16 @@
     </div>
     <div class="settings">
         <button>
-            <span>
+            <span
+                class:liked={decideLikedStatus(comment)}
+                on:click={() => {
+                    if (decideLikedStatus(comment)) {
+                        handleCommentDislike(comment);
+                    } else {
+                        handleCommentLike(comment);
+                    }
+                }}
+            >
                 {comment.likes_count}
                 <Fa icon={faHeart} />
             </span>
@@ -149,39 +229,13 @@
             {/if}
         </div>
     {/if}
-    <!-- <h2>
-        {comment.comment_content}<span
-            on:click={DeleteComment(comment.id, comment.post_id)}
-            ><Fa icon={faTrashCan} /></span
-        >
-    </h2>
-    <h2>
-        {comment.user.name}<span on:click={UpdateComment(post.id, comment.id)}
-            ><Fa icon={faWrench} /></span
-        >
-    </h2> -->
-
-    <!-- <div style="border: 1px black solid;">
-        {#each comment.responses as response}
-            <h3>{response.id}</h3>
-            <h3>{response.upvotes}</h3>
-            <h2>
-                {response.response_content}<span
-                    on:click={DeleteResponse(response.id, post.id, comment.id)}
-                    ><Fa icon={faTrashCan} /></span
-                >
-            </h2>
-            <h2>
-                {response.user.name}<span
-                    on:click={UpdateResponse(response.id, comment.id, post.id)}
-                    ><Fa icon={faWrench} /></span
-                >
-            </h2>
-        {/each} 
-    </div>-->
 </div>
 
 <style>
+    span.liked {
+        color: var(--green-color) !important;
+    }
+
     span.dropdown {
         color: var(--white-color);
         padding-left: 10px;
