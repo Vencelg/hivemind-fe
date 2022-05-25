@@ -1,12 +1,23 @@
 <script>
     import { user } from "../stores/store.js";
     import Fa from "svelte-fa";
-    import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+    import {
+        faCaretDown,
+        faPersonCirclePlus,
+    } from "@fortawesome/free-solid-svg-icons";
     import { faUser } from "@fortawesome/free-solid-svg-icons";
     import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
     import { push, pop, replace } from "svelte-spa-router";
+    import ShowFriendRequestsModal from "./ShowFriendRequestsModal.svelte";
+    import { getContext } from "svelte";
 
     $: isOpen = false;
+
+    const { open } = getContext("simple-modal");
+    const showFriendRequests = () => {
+        isOpen = !isOpen;
+        open(ShowFriendRequestsModal);
+    };
 </script>
 
 <div class="relative">
@@ -16,8 +27,9 @@
                 isOpen = !isOpen;
             }}
         >
-            <div class="profileImage"
-            style="{"background-image: url("+ $user.profile_picture +");"}"
+            <div
+                class="profileImage"
+                style={"background-image: url(" + $user.profile_picture + ");"}
             />
             <span id="mobileSpan"><Fa icon={faCaretDown} /></span>
             <p>{$user.name}<span><Fa icon={faCaretDown} /></span></p>
@@ -31,6 +43,9 @@
                 }}
             >
                 Profile<span><Fa icon={faUser} /></span>
+            </p>
+            <p on:click={showFriendRequests}>
+                Freind Requests<span><Fa icon={faPersonCirclePlus} /></span>
             </p>
             <p
                 on:click={() => {
@@ -56,7 +71,7 @@
     .dropdown {
         position: absolute;
         background-color: var(--nav-bg-color);
-        bottom: -100px;
+        bottom: -158px;
         right: 9.5vw;
         min-width: 170px;
         margin: auto;

@@ -8,6 +8,10 @@ a {
 	text-decoration: none;
 }
 
+span.friendRequestToast {
+	color: #13e235;
+}
+
 :root {
 	--bg-color: #10131d;
 	--nav-bg-color: #1f2538;

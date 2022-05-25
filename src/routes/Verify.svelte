@@ -1,8 +1,12 @@
 <script>
     import { onMount } from "svelte";
     import { user } from "../stores/store.js";
+    import Fa from "svelte-fa";
+    import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { push } from "svelte-spa-router";
 
     let emailSent = false;
+    let loading = false;
     let buttonStatus = "";
 
     onMount(async () => {
@@ -29,6 +33,10 @@
 
             if (res.ok) {
                 $user = resultFinal.user;
+
+                if($user.email_verified_at) {
+                    push("/");
+                }
             } else {
                 push("/login");
             }
@@ -38,6 +46,7 @@
     });
 
     const sendVerificationEmail = async () => {
+        loading = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch("http://127.0.0.1:8000/api/verify/resend", {
@@ -55,8 +64,8 @@
         let resultFinal = await JSON.parse(result);
 
         if (res.ok) {
-            console.log(resultFinal);
             emailSent = true;
+            loading = false;
         } else {
             console.log(resultFinal.message);
         }
@@ -64,24 +73,121 @@
 </script>
 
 {#if $user}
-    {#if $user.email_verified_at}
-        <h1>Successfully verified</h1>
-    {:else}
-        <main>
-            <h1>Verify</h1>
-            {#if emailSent}
-                <button on:click={sendVerificationEmail} disabled
-                    >Send Verification Email</button
-                >
-                <h2>Email sent!</h2>
-            {:else}
-                <button on:click={sendVerificationEmail}
-                    >Send Verification Email</button
-                >
-            {/if}
-        </main>
-    {/if}
+    <main>
+        <div class="container">
+            <div class="box">
+                <div class="heading">
+                    <h1>One more step<span class="dots">...</span></h1>
+                </div>
+                <div class="content">
+                    <p>
+                        Before you are able to use our website, you will need to
+                        verify your email. By clicking the button below an email
+                        will be sent to you. After opening it, click on the
+                        button in the email. After verifying you will be able to
+                        use the website.
+                    </p>
+                </div>
+                {#if emailSent}
+                    <p class="sent">Email sent</p>
+                {:else if !emailSent && loading}
+                    <span class="loading">
+                        <Fa icon={faSpinner} spin />
+                    </span>
+                {:else}
+                    <button on:click={sendVerificationEmail}
+                        >Send Verification Email</button
+                    >
+                {/if}
+            </div>
+        </div>
+    </main>
+{:else}
+    <div class="loading">
+        <span>
+            <Fa icon={faSpinner} spin />
+        </span>
+    </div>
 {/if}
 
 <style>
+    p.sent {
+        padding: 1rem;
+        font-size: 2rem;
+        color: var(--green-color);
+    }
+
+    span.dots {
+        color: var(--green-color);
+    }
+
+    div.loading {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    div.loading span {
+        font-size: 3rem;
+        color: var(--green-color);
+    }
+
+    span.loading {
+        font-size: 3rem;
+        color: var(--green-color);
+    }
+
+    div.container {
+        width: 80%;
+        margin: auto;
+    }
+
+    div.container div.box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+    }
+
+    div.container div.box div.heading {
+        border-bottom: 2px solid var(--green-color);
+        margin-bottom: 2rem;
+    }
+
+    div.container div.box div.heading h1 {
+        font-size: 5rem;
+        color: var(--white-color);
+        padding-bottom: 1rem;
+    }
+
+    div.container div.box div.content {
+        width: 40%;
+    }
+
+    div.container div.box div.content p {
+        font-size: 1.3rem;
+        text-align: justify;
+    }
+
+    div.container div.box button {
+        margin-top: 50px;
+        width: 40%;
+        background-color: #ffffff;
+        color: #080710;
+        padding: 15px 0;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    div.container div.box button:hover {
+        background-color: var(--green-color);
+        color: var(--white-color);
+    }
 </style>

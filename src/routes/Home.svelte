@@ -11,6 +11,7 @@
 
     let errors = null;
     let verified = false;
+    
     //ON MOUNT
     onMount(async () => {
         if (window.localStorage.getItem("token")) {
@@ -35,6 +36,10 @@
 
             if (res.ok) {
                 $user = resultFinal.user;
+                if(!$user.email_verified_at) {
+                    console.log("tady")
+                    push("#/verify");
+                }
             } else {
                 push("/login");
             }
@@ -60,8 +65,6 @@
 
         if (res.ok) {
             $posts = resultFinal.posts;
-            console.log(resultFinal);
-            verified = true;
         }
     });
 
@@ -442,9 +445,10 @@
             }
         }
     };
+
 </script>
 
-{#if $user && verified}
+{#if $user}
     <Navigation />
     <!--     <main>
         <h1>Home page</h1>
@@ -459,12 +463,8 @@
             on:response-deleted={handleResponseDelete}
             on:response-updated={handleResponseUpdate}
         />
-    </main>
-{:else if $user && !verified}
-    <main>
-        <h1>You need to verify first</h1>
     </main> -->
-    {:else}
+{:else}
     <div class="loading">
         <span>
             <Fa icon={faSpinner} spin />

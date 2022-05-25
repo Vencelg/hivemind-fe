@@ -12,6 +12,11 @@
 </Modal>
 
 <style>
+    :global(.friendRequests) {
+        --toastBackground: #1f2538;
+        --toastBarBackground: #1f2538;
+    }
+
     :global(.successBar) {
         --toastBackground: #13e235;
         --toastBarBackground: #178b2b;
