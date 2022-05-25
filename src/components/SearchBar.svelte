@@ -38,6 +38,7 @@
     
     div button {
         border: none;
+        color: var(--white-color);
         background-color: rgba(255, 255, 255, 0.07);
         border-radius: 0 3px 3px 0;
         height: 40px;

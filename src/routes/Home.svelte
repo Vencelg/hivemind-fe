@@ -8,10 +8,13 @@
     import Navigation from "../components/Navigation.svelte";
     import Fa from "svelte-fa";
     import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+    import { toast } from "@zerodevx/svelte-toast";
+    import Post from "../components/Post.svelte";
 
     let errors = null;
     let verified = false;
-    
+    $posts = null;
+
     //ON MOUNT
     onMount(async () => {
         if (window.localStorage.getItem("token")) {
@@ -36,9 +39,18 @@
 
             if (res.ok) {
                 $user = resultFinal.user;
-                if(!$user.email_verified_at) {
-                    console.log("tady")
+                if (!$user.email_verified_at) {
                     push("#/verify");
+                }
+                if ($user.friend_requests.length > 0) {
+                    toast.push(
+                        "You have <span class='friendRequestToast'>" +
+                            $user.friend_requests.length +
+                            "</span> new friend requests",
+                        {
+                            classes: ["friendRequests"],
+                        }
+                    );
                 }
             } else {
                 push("/login");
@@ -257,50 +269,6 @@
             }
         }
     };
-    const handleCommentUpdate = async (e) => {
-        const details = e.detail;
-        console.log(details);
-        const token = "Bearer " + window.localStorage.getItem("token");
-
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/comments/" + details.get("comment_id"),
-            {
-                method: "PUT",
-                body: JSON.stringify({
-                    comment_content: details.get("comment_content"),
-                    upvotes: details.get("upvotes"),
-                }),
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
-
-        const json = await res.json();
-        const result = JSON.stringify(json);
-        let resultFinal = await JSON.parse(result);
-
-        console.log(resultFinal);
-
-        if (res.ok) {
-            for (let i = 0; i < $posts.length; i++) {
-                if ($posts[i].id == details.get("post_id")) {
-                    for (let j = 0; j < $posts[i].comments.length; j++) {
-                        if (
-                            $posts[i].comments[j].id ==
-                            details.get("comment_id")
-                        ) {
-                            $posts[i].comments[j] = resultFinal.comment;
-                        }
-                    }
-                }
-            }
-        }
-    };
 
     const handleResponseSubmit = async (e) => {
         const details = e.detail;
@@ -389,67 +357,31 @@
             }
         }
     };
-    const handleResponseUpdate = async (e) => {
-        const details = e.detail;
-        console.log(details);
-        const token = "Bearer " + window.localStorage.getItem("token");
-
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/responses/" + details.get("response_id"),
-            {
-                method: "PUT",
-                body: JSON.stringify({
-                    response_content: details.get("response_content"),
-                    upvotes: details.get("upvotes"),
-                }),
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
-
-        const json = await res.json();
-        const result = JSON.stringify(json);
-        let resultFinal = await JSON.parse(result);
-
-        console.log(resultFinal);
-
-        if (res.ok) {
-            for (let i = 0; i < $posts.length; i++) {
-                if ($posts[i].id == details.get("post_id")) {
-                    for (let j = 0; j < $posts[i].comments.length; j++) {
-                        if (
-                            $posts[i].comments[j].id ==
-                            details.get("comment_id")
-                        ) {
-                            for (
-                                let k = 0;
-                                k < $posts[i].comments[j].responses.length;
-                                k++
-                            ) {
-                                if (
-                                    $posts[i].comments[j].responses[k].id ==
-                                    details.get("response_id")
-                                ) {
-                                    $posts[i].comments[j].responses[k] =
-                                        resultFinal.response;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-
+    
 </script>
 
-{#if $user}
+{#if $user && $posts}
     <Navigation />
+    <main>
+        <div class="container">
+
+            <div class="postForm">
+
+            </div>
+            <div class="posts">
+                {#each $posts as post}
+                    <Post
+                        {post}
+                        on:comment-added={handleCommentSubmit}
+                        on:response-added={handleResponseSubmit}
+                        on:post-deleted={handlePostDelete}
+                        on:comment-deleted={handleCommentDelete}
+                        on:response-deleted={handleResponseDelete}
+                    />
+                {/each}
+            </div>
+        </div>
+    </main>
     <!--     <main>
         <h1>Home page</h1>
         <AddPostForm on:post-added={handlePostSubmit} />
@@ -484,5 +416,14 @@
     div.loading span {
         font-size: 3rem;
         color: var(--green-color);
+    }
+
+    div.container {
+        width: 50%;
+        margin: auto;
+    }
+
+    div.container div.posts{
+        margin-top: 5rem;
     }
 </style>

@@ -56,6 +56,9 @@
 
             if (res.ok) {
                 $user = resultFinal.user;
+                if(!$user.email_verified_at) {
+                    push("#/verify");
+                }
                 if ($user.friend_requests.length > 0) {
                     toast.push(
                         "You have <span class='friendRequestToast'>" +

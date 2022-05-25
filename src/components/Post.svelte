@@ -18,7 +18,7 @@
 
     const { open } = getContext("simple-modal");
     const showImage = (imageSrc) => open(ImagePopup, { imageSrc: imageSrc });
-    const showUpdateForm = (post) => open(UpdatePostModal, {post});
+    const showUpdateForm = (post) => open(UpdatePostModal, { post });
 
     export let post;
     let isOwner = false;
@@ -48,29 +48,6 @@
         dispatch("post-deleted", id);
     };
 
-    const UpdatePost = (postId) => {
-        const id = postId;
-        let errorsAdded = false;
-        headerErrors = null;
-        bodyErrors = null;
-        const formData = new FormData();
-        if (header != "") {
-            formData.append("header", header);
-        }
-        if (body != "") {
-            formData.append("body", body);
-        }
-        if (upvotes) {
-            formData.append("upvotes", upvotes);
-        }
-        if (files) {
-            formData.append("image", files[0]);
-        }
-
-        formData.append("id", id);
-        dispatch("post-updated", formData);
-    };
-
     const AddComment = (id) => {
         const formData = new FormData();
 
@@ -90,35 +67,12 @@
         comment_content = "";
     };
 
-    const UpdateComment = (id, commentId) => {
-        const formData = new FormData();
-
-        formData.append("comment_id", commentId);
-        formData.append("post_id", id);
-        formData.append("comment_content", "Toto je upravený komentář");
-        formData.append("upvotes", Math.floor(Math.random() * 100));
-
-        dispatch("comment-updated", formData);
-    };
-
     const DeleteComment = (e) => {
         dispatch("comment-deleted", e.detail);
     };
 
     const AddResponse = (e) => {
         dispatch("response-added", e.detail);
-    };
-
-    const UpdateResponse = (id, commentId, postId) => {
-        const formData = new FormData();
-
-        formData.append("comment_id", commentId);
-        formData.append("response_id", id);
-        formData.append("post_id", postId);
-        formData.append("response_content", "Toto je upravená odpověď");
-        formData.append("upvotes", Math.floor(Math.random() * 100));
-
-        dispatch("response-updated", formData);
     };
 
     const DeleteResponse = (e) => {
@@ -156,8 +110,12 @@
                 </span>
                 {#if dropdownOpen}
                     <div class="dropdown">
-                        <span on:click="{showUpdateForm(post)}"><Fa icon={faWrench} /></span>
-                        <span on:click="{DeletePost(post.id)}"><Fa icon={faTrashCan} /></span>
+                        <span on:click={showUpdateForm(post)}
+                            ><Fa icon={faWrench} /></span
+                        >
+                        <span on:click={DeletePost(post.id)}
+                            ><Fa icon={faTrashCan} /></span
+                        >
                     </div>
                 {/if}
             </div>
@@ -212,7 +170,12 @@
         {#if post.comments}
             <div class="comments">
                 {#each post.comments as comment}
-                    <Comment {comment} on:response-added={AddResponse} on:comment-deleted={DeleteComment} on:response-deleted={DeleteResponse} />
+                    <Comment
+                        {comment}
+                        on:response-added={AddResponse}
+                        on:comment-deleted={DeleteComment}
+                        on:response-deleted={DeleteResponse}
+                    />
                 {/each}
             </div>
         {/if}
@@ -241,7 +204,7 @@
     div.post {
         background-color: var(--nav-bg-color);
         margin-bottom: 1rem;
-        padding: 10px;
+        padding: 20px;
         border-radius: 20px;
     }
 
