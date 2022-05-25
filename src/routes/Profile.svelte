@@ -101,7 +101,7 @@
 
         if (res.ok) {
             $userProfile = resultFinal.profile;
-            $posts = resultFinal.profile.posts;
+            $posts = resultFinal.profile.posts.reverse();
             decideFriendStatus();
         } else {
             toast.push("User doesn't exist", {

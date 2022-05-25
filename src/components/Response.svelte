@@ -44,7 +44,7 @@
     <div class="settings">
         <button>
             <span>
-                {response.upvotes}
+                {response.likes_count}
                 <Fa icon={faHeart} />
             </span>
         </button>

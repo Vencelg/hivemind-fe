@@ -135,7 +135,7 @@
     <div class="buttons">
         <button>
             <span>
-                {post.upvotes}
+                {post.likes_count}
                 <Fa icon={faHeart} />
             </span>
         </button>
