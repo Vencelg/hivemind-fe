@@ -4,7 +4,6 @@
     import { user } from "../stores/store.js";
     import { posts } from "../stores/posts.js";
     import AddPostForm from "../components/AddPostForm.svelte";
-    import AllPosts from "../components/AllPosts.svelte";
     import Navigation from "../components/Navigation.svelte";
     import Fa from "svelte-fa";
     import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -103,7 +102,7 @@
         console.log(resultFinal);
 
         if (res.ok) {
-            $posts = [...$posts, resultFinal.post];
+            $posts = [resultFinal.post, ...$posts];
         }
     };
 
@@ -366,7 +365,7 @@
         <div class="container">
 
             <div class="postForm">
-
+                <AddPostForm on:post-added={handlePostSubmit} />
             </div>
             <div class="posts">
                 {#each $posts as post}
@@ -382,20 +381,6 @@
             </div>
         </div>
     </main>
-    <!--     <main>
-        <h1>Home page</h1>
-        <AddPostForm on:post-added={handlePostSubmit} />
-        <AllPosts
-            on:post-deleted={handlePostDelete}
-            on:post-updated={postUpdateHelper}
-            on:comment-added={handleCommentSubmit}
-            on:comment-deleted={handleCommentDelete}
-            on:comment-updated={handleCommentUpdate}
-            on:response-added={handleResponseSubmit}
-            on:response-deleted={handleResponseDelete}
-            on:response-updated={handleResponseUpdate}
-        />
-    </main> -->
 {:else}
     <div class="loading">
         <span>
@@ -420,6 +405,7 @@
 
     div.container {
         width: 50%;
+        padding-bottom: 2rem;
         margin: auto;
     }
 

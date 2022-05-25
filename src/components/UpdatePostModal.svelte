@@ -138,7 +138,7 @@
         border: none !important;
         outline: none !important;
         color: var(--white-color);
-        resize: vertical;
+        resize: none;
         font-size: 1.1rem;
     }
 
