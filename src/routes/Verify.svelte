@@ -186,6 +186,8 @@
         border-radius: 5px;
         cursor: pointer;
         transition: 0.2s;
+        border: none;
+        outline: none;
     }
 
     div.container div.box button:hover {
