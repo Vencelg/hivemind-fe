@@ -4,6 +4,7 @@
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
     import api from "../scripts/api";
+    import { toast } from "@zerodevx/svelte-toast";
 
     if ($user) {
         pop();
