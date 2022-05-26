@@ -412,4 +412,16 @@
     div.container div.posts{
         margin-top: 5rem;
     }
+
+    @media only screen and (max-width: 1024px) {
+        div.container {
+            width: 80%;
+        }
+    }
+
+    @media only screen and (max-width: 425px) {
+        div.container {
+            width: 90%;
+        }
+    }
 </style>

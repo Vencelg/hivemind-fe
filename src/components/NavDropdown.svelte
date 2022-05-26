@@ -161,8 +161,8 @@
         }
 
         .dropdown {
-            right: 0;
-            bottom: -106px;
+            right: 20px;
+            bottom: -159px;
         }
     }
 
@@ -170,7 +170,10 @@
         .dropdownBox p {
             display: none;
         }
-
+        .dropdown {
+            right: 0;
+            bottom: -168px;
+        }
         .dropdownBox #mobileSpan {
             display: contents;
         }

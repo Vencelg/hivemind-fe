@@ -27,7 +27,6 @@
 
     $posts = null;
     onMount(async () => {
-
         getAuth();
         getUser();
     });
@@ -56,7 +55,7 @@
 
             if (res.ok) {
                 $user = resultFinal.user;
-                if(!$user.email_verified_at) {
+                if (!$user.email_verified_at) {
                     push("#/verify");
                 }
                 if ($user.friend_requests.length > 0) {
@@ -772,5 +771,117 @@
         color: var(--white-color);
         text-decoration: none;
         font-size: calc(100vw / 120);
+    }
+
+    @media only screen and (max-width: 1024px) {
+        div.content div.friends a p {
+            font-size: calc(100vw / 110);
+        }
+    }
+    @media only screen and (max-width: 920px) {
+        div.content {
+            display: flex;
+            flex-direction: column;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-top: 2rem;
+        }
+
+        div.content div.friends {
+            width: fit-content;
+            height: 27rem;
+            margin: auto;
+        }
+
+        div.content div.friends a div.friendImage {
+            width: 7rem;
+            height: 7rem;
+        }
+
+        div.content div.friends a p {
+            font-size: 0.8rem;
+        }
+
+        div.header div.box div.image {
+            width: 12rem;
+            height: 12rem;
+        }
+    }
+
+    @media only screen and (max-width: 700px) {
+        div.header div.box div.userData p.bigP {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media only screen and (max-width: 600px) {
+        div.header {
+            padding: 1rem 5%;
+        }
+
+        div.header div.box div.image {
+            width: 8rem;
+            height: 8rem;
+        }
+    }
+
+    @media only screen and (max-width: 470px) {
+        button.unfriend {
+            width: 7rem;
+            padding: 5px 0;
+            font-size: 15px;
+        }
+
+        button.addFriend {
+            margin-top: 10px;
+            width: 55%;
+            padding: 2px 5px;
+            font-size: 16px;
+        }
+
+        div.content div.friends {
+            height: 23rem;
+        }
+
+        div.content div.friends div {
+            height: fit-content;
+            width: fit-content;
+            margin: auto;
+        }
+
+        div.content div.friends a div.friendImage {
+            width: 5rem;
+            height: 5rem;
+        }
+
+        div.header div.box div.image {
+            width: 6rem;
+            height: 6rem;
+        }
+
+        div.header div.box div.userData p.bigP {
+            font-size: 1.3rem;
+            font-family: AlteHaasBold;
+        }
+
+        div.header div.box div.userData p.smallP {
+            font-size: 1rem;
+            color: var(--green-color);
+        }
+
+        div.content div.friends a p {
+            font-size: 0.8rem;
+            height: 2rem;
+        }
+    }
+
+    @media only screen and (max-width: 375px) {
+        main {
+            width: 90%;
+        }
+
+        div.content div.friends {
+            height: 24rem;
+        }
     }
 </style>

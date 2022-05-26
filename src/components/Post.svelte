@@ -423,4 +423,10 @@
     div.post div.commentForm form button:hover {
         color: var(--green-color);
     }
+
+    @media only screen and (max-width: 425px) {
+        div.post div.postContent div.postImage {
+            height: 25rem;
+        }
+    }
 </style>
