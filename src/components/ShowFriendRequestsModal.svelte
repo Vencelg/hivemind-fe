@@ -12,6 +12,9 @@
 </div>
 
 <style>
+    p {
+        text-align: center;
+    }
     div.box {
         background-color: var(--bg-color);
         display: flex;
