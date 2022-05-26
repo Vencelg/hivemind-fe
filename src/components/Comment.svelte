@@ -13,6 +13,7 @@
     import { toast } from "@zerodevx/svelte-toast";
     import UpdateCommentModal from "./UpdateCommentModal.svelte";
     import { getContext } from "svelte";
+    import api from "../scripts/api";
 
     export let comment;
     const dispatch = createEventDispatcher();
@@ -71,19 +72,16 @@
     const handleCommentLike = async (commentTemp) => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/comments/like/" + commentTemp.id,
-            {
-                method: "GET",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "comments/like/" + commentTemp.id, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -100,19 +98,16 @@
     const handleCommentDislike = async (commentTemp) => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/comments/dislike/" + commentTemp.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "comments/dislike/" + commentTemp.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);

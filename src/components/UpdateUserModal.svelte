@@ -6,6 +6,7 @@
     import { getContext } from "svelte";
     import Fa from "svelte-fa";
     import { faPencil } from "@fortawesome/free-solid-svg-icons";
+    import api from "../scripts/api";
 
     const { close } = getContext("simple-modal");
 
@@ -63,19 +64,16 @@
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const resUpdate = await fetch(
-            "http://127.0.0.1:8000/api/auth/editUser",
-            {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const resUpdate = await fetch(api + "auth/editUser", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const jsonUpdate = await resUpdate.json();
         const resultUpdate = JSON.stringify(jsonUpdate);
@@ -84,11 +82,10 @@
         console.log(resultFinalUpdate);
 
         if (resUpdate.ok) {
-            
             $user = resultFinalUpdate.user;
             $userProfile = resultFinalUpdate.user;
 
-            for(let i = 0; i < $posts.length; i++) {
+            for (let i = 0; i < $posts.length; i++) {
                 $posts[i].user = $user;
             }
 
@@ -137,7 +134,7 @@
             bind:value={username}
         />
 
-        <button type="submit" on:click="{handleUserUpdate}">Save</button>
+        <button type="submit" on:click={handleUserUpdate}>Save</button>
     </form>
 </div>
 

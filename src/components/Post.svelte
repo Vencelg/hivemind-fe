@@ -15,10 +15,14 @@
     import Time from "svelte-time";
     import { toast } from "@zerodevx/svelte-toast";
     import Comment from "./Comment.svelte";
+    import api from "../scripts/api";
 
     const { open } = getContext("simple-modal");
     const showImage = (imageSrc) => open(ImagePopup, { imageSrc: imageSrc });
-    const showUpdateForm = (post) => {dropdownOpen = false; open(UpdatePostModal, { post })};
+    const showUpdateForm = (post) => {
+        dropdownOpen = false;
+        open(UpdatePostModal, { post });
+    };
 
     export let post;
     let isOwner = false;
@@ -92,19 +96,16 @@
     const handlePostLike = async (postTemp) => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/posts/like/" + postTemp.id,
-            {
-                method: "GET",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "posts/like/" + postTemp.id, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -121,19 +122,16 @@
     const handlePostDislike = async (postTemp) => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/posts/dislike/" + postTemp.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "posts/dislike/" + postTemp.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);

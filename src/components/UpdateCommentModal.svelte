@@ -2,6 +2,7 @@
     import { posts } from "../stores/posts.js";
     import { toast } from "@zerodevx/svelte-toast";
     import { getContext } from "svelte";
+    import api from "../scripts/api";
 
     const { close } = getContext("simple-modal");
     export let comment;
@@ -28,23 +29,20 @@
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const resUpdate = await fetch(
-            "http://127.0.0.1:8000/api/comments/" + comment.id,
-            {
-                method: "PUT",
-                body: JSON.stringify({
-                    comment_content,
-                    upvotes: comment.upvotes,
-                }),
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const resUpdate = await fetch(api + "comments/" + comment.id, {
+            method: "PUT",
+            body: JSON.stringify({
+                comment_content,
+                upvotes: comment.upvotes,
+            }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const jsonUpdate = await resUpdate.json();
         const resultUpdate = JSON.stringify(jsonUpdate);

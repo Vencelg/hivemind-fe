@@ -4,6 +4,7 @@
     import Fa from "svelte-fa";
     import { faXmark } from "@fortawesome/free-solid-svg-icons";
     import { toast } from "@zerodevx/svelte-toast";
+    import api from "../scripts/api";
 
     const { close } = getContext("simple-modal");
 
@@ -12,19 +13,16 @@
     const handleFriendshipRequestDelete = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/friends/" + request.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "friends/" + request.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -46,7 +44,7 @@
     const handleFriendshipRequestUpdate = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/friends/" + request.id, {
+        const res = await fetch(api + "friends/" + request.id, {
             method: "PUT",
             body: JSON.stringify({
                 accepted: 1,
@@ -76,8 +74,6 @@
             );
         }
     };
-
-    
 </script>
 
 <div class="box">
@@ -99,8 +95,12 @@
     </div>
 
     <div class="buttons">
-        <button class="accept" on:click="{handleFriendshipRequestUpdate}">Accept</button>
-        <button class="cross" on:click="{handleFriendshipRequestDelete}"><Fa icon="{faXmark}" /></button>
+        <button class="accept" on:click={handleFriendshipRequestUpdate}
+            >Accept</button
+        >
+        <button class="cross" on:click={handleFriendshipRequestDelete}
+            ><Fa icon={faXmark} /></button
+        >
     </div>
 </div>
 

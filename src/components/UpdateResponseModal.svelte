@@ -2,7 +2,7 @@
     import { posts } from "../stores/posts.js";
     import { toast } from "@zerodevx/svelte-toast";
     import { getContext } from "svelte";
-import { faK } from "@fortawesome/free-solid-svg-icons";
+    import api from "../scripts/api";
 
     const { close } = getContext("simple-modal");
     export let response;
@@ -30,22 +30,19 @@ import { faK } from "@fortawesome/free-solid-svg-icons";
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/responses/" + response.id,
-            {
-                method: "PUT",
-                body: JSON.stringify({
-                    response_content,
-                }),
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "responses/" + response.id, {
+            method: "PUT",
+            body: JSON.stringify({
+                response_content,
+            }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
