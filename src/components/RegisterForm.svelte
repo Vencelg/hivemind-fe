@@ -53,7 +53,7 @@
                 classes: ["dangerNoBar"],
             });
         }
-        if (password.trim().length <= 6) {
+        if (password.trim().length < 6) {
             passwordErrors = "Passwords needs to be atleast 6 characters";
             errorsSet = true;
             toast.push(passwordErrors, {
