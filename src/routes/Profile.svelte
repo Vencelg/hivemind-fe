@@ -503,6 +503,8 @@
     $: if (params.user != paramsOld.user) {
         getUser();
     }
+
+    let helper = 0;
 </script>
 
 {#if $user && $userProfile && $posts}
@@ -562,34 +564,44 @@
             </div>
         </div>
         <div class="content">
-            <div class="friends">
-                {#each $userProfile.friends_of_this_user as friend}
-                    <div>
-                        <a href={"#/profile/" + friend.id}>
-                            <div
-                                class="friendImage"
-                                style="background-image: url({friend.profile_picture});"
-                            />
-                            <p>
-                                {friend.name}
-                            </p>
-                        </a>
-                    </div>
-                {/each}
-                {#each $userProfile.this_user_friend_of as friend}
-                    <div>
-                        <a href={"#/profile/" + friend.id}>
-                            <div
-                                class="friendImage"
-                                style="background-image: url({friend.profile_picture});"
-                            />
-                            <p>
-                                {friend.name}
-                            </p>
-                        </a>
-                    </div>
-                {/each}
-            </div>
+            {#if $userProfile.this_user_friend_of.length == 0 && $userProfile.friends_of_this_user.length == 0}
+                <div class="noFriends">
+                    <p>User has no friends</p>
+                </div>
+            {:else if $userProfile.friends_of_this_user.length + $userProfile.this_user_friend_of.length > 9}
+                <div class="noFriends">
+                    <p>sem pujde modal</p>
+                </div>
+            {:else}
+                <div class="friends">
+                    {#each $userProfile.friends_of_this_user as friend}
+                        <div>
+                            <a href={"#/profile/" + friend.id}>
+                                <div
+                                    class="friendImage"
+                                    style="background-image: url({friend.profile_picture});"
+                                />
+                                <p>
+                                    {friend.name}
+                                </p>
+                            </a>
+                        </div>
+                    {/each}
+                    {#each $userProfile.this_user_friend_of as friend}
+                        <div>
+                            <a href={"#/profile/" + friend.id}>
+                                <div
+                                    class="friendImage"
+                                    style="background-image: url({friend.profile_picture});"
+                                />
+                                <p>
+                                    {friend.name}
+                                </p>
+                            </a>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
             <div class="posts">
                 {#each $posts as post}
                     <Post
@@ -751,6 +763,17 @@
 
     div.content div.friends div {
         height: calc(100vw / 12);
+    }
+
+    div.content div.noFriends {
+        padding: 1rem;
+        height: fit-content;
+        background-color: var(--nav-bg-color);
+        border-radius: 20px;
+    }
+
+    div.content div.noFriends p {
+        text-align: center;
     }
 
     div.content div.friends a div.friendImage {
