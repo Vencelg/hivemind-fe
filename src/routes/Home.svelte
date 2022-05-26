@@ -9,6 +9,7 @@
     import { faSpinner } from "@fortawesome/free-solid-svg-icons";
     import { toast } from "@zerodevx/svelte-toast";
     import Post from "../components/Post.svelte";
+    import api from "../scripts/api";
 
     let errors = null;
     let verified = false;
@@ -20,7 +21,7 @@
             const token = "Bearer " + window.localStorage.getItem("token");
             console.log(token);
 
-            const res = await fetch("http://127.0.0.1:8000/api/auth/", {
+            const res = await fetch(api + "auth/", {
                 method: "GET",
                 headers: {
                     "Access-Control-Allow-Origin": "*",
@@ -60,7 +61,7 @@
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/posts/", {
+        const res = await fetch(api + "posts/", {
             method: "GET",
             headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -84,7 +85,7 @@
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/posts/", {
+        const res = await fetch(api + "posts/", {
             method: "POST",
             body: details,
             headers: {
@@ -111,7 +112,7 @@
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const resUpdate = await fetch(
-            "http://127.0.0.1:8000/api/posts/" + resultFinal.post.id,
+            api + "/api/posts/" + resultFinal.post.id,
             {
                 method: "POST",
                 body: formData,
@@ -140,7 +141,7 @@
         console.log(details);
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/posts/" + details, {
+        const res = await fetch(api + "posts/" + details, {
             method: "DELETE",
             headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -169,19 +170,16 @@
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const resUpdate = await fetch(
-            "http://127.0.0.1:8000/api/posts/" + details.get("id"),
-            {
-                method: "POST",
-                body: details,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const resUpdate = await fetch(api + "posts/" + details.get("id"), {
+            method: "POST",
+            body: details,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const jsonUpdate = await resUpdate.json();
         const resultUpdate = JSON.stringify(jsonUpdate);
@@ -202,7 +200,7 @@
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/comments/", {
+        const res = await fetch(api + "comments/", {
             method: "POST",
             body: details,
             headers: {
@@ -235,19 +233,16 @@
         console.log(details);
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/comments/" + details.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "comments/" + details.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -273,7 +268,7 @@
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/responses/", {
+        const res = await fetch(api + "responses/", {
             method: "POST",
             body: details,
             headers: {
@@ -311,19 +306,16 @@
         console.log(details);
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/responses/" + details.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "responses/" + details.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -356,14 +348,12 @@
             }
         }
     };
-    
 </script>
 
 {#if $user && $posts}
     <Navigation />
     <main>
         <div class="container">
-
             <div class="postForm">
                 <AddPostForm on:post-added={handlePostSubmit} />
             </div>
@@ -409,7 +399,7 @@
         margin: auto;
     }
 
-    div.container div.posts{
+    div.container div.posts {
         margin-top: 5rem;
     }
 

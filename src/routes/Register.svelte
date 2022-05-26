@@ -3,6 +3,7 @@
     import Logo from "../components/Logo.svelte";
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
+    import api from "../scripts/api";
 
     if ($user) {
         pop();
@@ -11,7 +12,7 @@
     const handleRegister = async (e) => {
         const details = e.detail;
 
-        const res = await fetch("http://127.0.0.1:8000/api/auth/register", {
+        const res = await fetch(api + "auth/register", {
             method: "POST",
             body: JSON.stringify(details),
             headers: {
@@ -33,7 +34,7 @@
                 classes: ["successNoBar"],
             });
             push("/login");
-        }else {
+        } else {
             toast.push("Something went wrong", {
                 classes: ["dangerNoBar"],
             });

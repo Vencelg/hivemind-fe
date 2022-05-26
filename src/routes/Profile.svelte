@@ -12,6 +12,7 @@
     import UpdateUserModal from "../components/UpdateUserModal.svelte";
     import { toast } from "@zerodevx/svelte-toast";
     import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+    import api from "../scripts/api";
 
     export let params;
     let paramsOld = params;
@@ -37,7 +38,7 @@
         if (window.localStorage.getItem("token")) {
             console.log(token);
 
-            const res = await fetch("http://127.0.0.1:8000/api/auth/", {
+            const res = await fetch(api + "auth/", {
                 method: "GET",
                 headers: {
                     "Access-Control-Allow-Origin": "*",
@@ -79,7 +80,7 @@
     const getUser = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/auth/userProfile", {
+        const res = await fetch(api + "auth/userProfile", {
             method: "POST",
             body: JSON.stringify({
                 user_id: params.user,
@@ -163,7 +164,7 @@
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/posts/" + details, {
+        const res = await fetch(api + "posts/" + details, {
             method: "DELETE",
             headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -189,7 +190,7 @@
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/comments/", {
+        const res = await fetch(api + "comments/", {
             method: "POST",
             body: details,
             headers: {
@@ -222,7 +223,7 @@
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/responses/", {
+        const res = await fetch(api + "responses/", {
             method: "POST",
             body: details,
             headers: {
@@ -261,19 +262,16 @@
         console.log(details);
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/comments/" + details.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "comments/" + details.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -300,19 +298,16 @@
         console.log(details);
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            "http://127.0.0.1:8000/api/responses/" + details.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "responses/" + details.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -363,7 +358,7 @@
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/friends/" + id, {
+        const res = await fetch(api + "friends/" + id, {
             method: "DELETE",
             headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -402,7 +397,7 @@
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/friends/" + id, {
+        const res = await fetch(api + "friends/" + id, {
             method: "DELETE",
             headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -431,7 +426,7 @@
     const handleFriendshipCreate = async (user_id, friend_id) => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/friends", {
+        const res = await fetch(api + "friends", {
             method: "POST",
             body: JSON.stringify({
                 user_id,
@@ -476,7 +471,7 @@
 
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/friends/" + id, {
+        const res = await fetch(api + "friends/" + id, {
             method: "PUT",
             body: JSON.stringify({
                 accepted: 1,

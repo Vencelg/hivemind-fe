@@ -3,7 +3,9 @@
     import { user } from "../stores/store.js";
     import Fa from "svelte-fa";
     import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { push } from "svelte-spa-router";
+    import { push } from "svelte-spa-router";
+    import api from "../scripts/api";
+
 
     let emailSent = false;
     let loading = false;
@@ -15,7 +17,7 @@ import { push } from "svelte-spa-router";
         if (window.localStorage.getItem("token")) {
             console.log(token);
 
-            const res = await fetch("http://127.0.0.1:8000/api/auth/", {
+            const res = await fetch(api + "auth/", {
                 method: "GET",
                 headers: {
                     "Access-Control-Allow-Origin": "*",
@@ -49,7 +51,7 @@ import { push } from "svelte-spa-router";
         loading = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch("http://127.0.0.1:8000/api/verify/resend", {
+        const res = await fetch(api +"verify/resend", {
             method: "POST",
             headers: {
                 "Access-Control-Allow-Origin": "*",

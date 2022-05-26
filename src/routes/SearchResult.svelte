@@ -5,6 +5,8 @@
     import { user } from "../stores/store.js";
     import Fa from "svelte-fa";
     import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+    import api from "../scripts/api";
+
 
     export let params;
     let paramsOld = params;
@@ -15,7 +17,7 @@
             const token = "Bearer " + window.localStorage.getItem("token");
             console.log(token);
 
-            const res = await fetch("http://127.0.0.1:8000/api/auth/", {
+            const res = await fetch(api + "auth/", {
                 method: "GET",
                 headers: {
                     "Access-Control-Allow-Origin": "*",
@@ -61,7 +63,7 @@
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(
-            "http://127.0.0.1:8000/api/users/" + params.value,
+            api +"users/" + params.value,
             {
                 method: "GET",
                 headers: {

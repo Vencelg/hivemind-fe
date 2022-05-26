@@ -1,13 +1,15 @@
 <script>
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
+    import api from "../scripts/api";
+
 
 
     const logout = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
         console.log(token);
 
-        const res = await fetch("http://127.0.0.1:8000/api/auth/logout", {
+        const res = await fetch(api + "auth/logout", {
             method: "GET",
             headers: {
                 "Access-Control-Allow-Origin": "*",

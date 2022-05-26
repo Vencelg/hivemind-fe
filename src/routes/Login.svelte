@@ -4,6 +4,8 @@
     import { user } from "../stores/store.js";
     import Logo from "../components/Logo.svelte";
     import { toast } from "@zerodevx/svelte-toast";
+    import api from "../scripts/api";
+
 
     if ($user) {
         pop();
@@ -12,7 +14,7 @@
     const handleLogin = async (e) => {
         const details = e.detail;
 
-        const res = await fetch("http://127.0.0.1:8000/api/auth/login", {
+        const res = await fetch(api +"auth/login", {
             method: "POST",
             body: JSON.stringify(details),
             headers: {
