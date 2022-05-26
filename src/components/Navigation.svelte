@@ -5,7 +5,7 @@
 
     let size = 3;
 
-    if (screen.width <= 600) {
+    $: if (screen.width <= 600) {
         size = 2;
     }
 </script>

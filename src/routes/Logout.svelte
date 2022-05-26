@@ -1,9 +1,9 @@
 <script>
     import { push, pop, replace } from "svelte-spa-router";
     import { user } from "../stores/store.js";
+    import { onMount } from "svelte";
 
-
-    const logout = async () => {
+    onMount(async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
         console.log(token);
 
@@ -28,12 +28,8 @@
             $user = null;
             push("/login");
         }
-    };
+    });
 </script>
-
-<main>
-    <button on:click={logout}>logout</button>
-</main>
 
 <style>
 </style>

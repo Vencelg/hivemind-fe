@@ -115,6 +115,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        gap: 10px;
     }
 
     .dropdownBox div.profileImage {

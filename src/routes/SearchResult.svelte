@@ -98,7 +98,7 @@
                     <UserSearchResult userProfile={user} />
                 </a>
             {:else}
-                <h1>No users found</h1>
+                <h1 class="noResult">No users found</h1>
             {/each}
         </div>
     </main>
@@ -111,6 +111,11 @@
 {/if}
 
 <style>
+    h1.noResult {
+        text-align: center;
+        color: var(--white-color);
+    }
+
     div.loading {
         height: 100vh;
         width: 100%;
@@ -127,5 +132,11 @@
     div.container {
         width: 50%;
         margin: auto;
+    }
+
+    @media only screen and (max-width: 550px) {
+        div.container {
+            width: 70%;
+        }
     }
 </style>

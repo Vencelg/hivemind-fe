@@ -4,6 +4,7 @@
     import { user } from "../stores/store.js";
     import Fa from "svelte-fa";
     import { faXmark } from "@fortawesome/free-solid-svg-icons";
+    import { toast } from "@zerodevx/svelte-toast";
 
     const dispatch = createEventDispatcher();
     let formOpen = false;

@@ -253,4 +253,10 @@
         background-position: center;
         background-color: var(--white-color);
     }
+
+    @media only screen and (max-width: 550px) {
+        form {
+            width: 100%;
+        }
+    }
 </style>

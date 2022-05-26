@@ -147,4 +147,10 @@ import { faK } from "@fortawesome/free-solid-svg-icons";
         background-color: var(--green-color);
         color: var(--white-color);
     }
+
+    @media only screen and (max-width: 550px) {
+        form {
+            width: 100%;
+        }
+    }
 </style>

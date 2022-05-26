@@ -18,7 +18,7 @@
 
     const { open } = getContext("simple-modal");
     const showImage = (imageSrc) => open(ImagePopup, { imageSrc: imageSrc });
-    const showUpdateForm = (post) => open(UpdatePostModal, { post });
+    const showUpdateForm = (post) => {dropdownOpen = false; open(UpdatePostModal, { post })};
 
     export let post;
     let isOwner = false;
@@ -44,6 +44,7 @@
     };
 
     const DeletePost = (postId) => {
+        dropdownOpen = false;
         const id = postId;
         dispatch("post-deleted", id);
     };
