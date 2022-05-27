@@ -94,7 +94,9 @@
                 {#if emailSent}
                     <p class="sent">Email sent</p>
                 {:else if emailAlreadySent}
-                <p class="alreadySent">Email already sent, wait before sending a new one</p>
+                    <p class="alreadySent">
+                        Email already sent, wait before sending a new one
+                    </p>
                 {:else if !emailSent && loading}
                     <span class="loading">
                         <Fa icon={faSpinner} spin />
@@ -202,5 +204,55 @@
     div.container div.box button:hover {
         background-color: var(--green-color);
         color: var(--white-color);
+    }
+
+    @media only screen and (max-width: 1024px) {
+        div.container div.box div.content {
+            width: 60%;
+        }
+    }
+
+    @media only screen and (max-width: 768px) {
+        div.container div.box div.content {
+            width: 80%;
+        }
+
+        div.container div.box div.heading h1 {
+            font-size: 3rem;
+            color: var(--white-color);
+            padding-bottom: 1rem;
+        }
+    }
+
+    @media only screen and (max-width: 425px) {
+        div.container div.box div.content {
+            width: 92%;
+        }
+
+        div.container div.box div.content p {
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        div.container div.box div.heading h1 {
+            font-size: 2rem;
+            color: var(--white-color);
+            padding-bottom: 1rem;
+        }
+
+        div.container div.box button {
+            margin-top: 50px;
+            width: 70%;
+            background-color: #ffffff;
+            color: #080710;
+            padding: 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            outline: none;
+        }
     }
 </style>
