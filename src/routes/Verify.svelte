@@ -6,8 +6,8 @@
     import { push } from "svelte-spa-router";
     import api from "../scripts/api";
 
-
     let emailSent = false;
+    let emailAlreadySent = false;
     let loading = false;
     let buttonStatus = "";
 
@@ -36,7 +36,7 @@
             if (res.ok) {
                 $user = resultFinal.user;
 
-                if($user.email_verified_at) {
+                if ($user.email_verified_at) {
                     push("/");
                 }
             } else {
@@ -51,7 +51,7 @@
         loading = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(api +"verify/resend", {
+        const res = await fetch(api + "verify/resend", {
             method: "POST",
             headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -69,7 +69,8 @@
             emailSent = true;
             loading = false;
         } else {
-            console.log(resultFinal.message);
+            emailAlreadySent = true;
+            loading = false;
         }
     };
 </script>
@@ -92,6 +93,8 @@
                 </div>
                 {#if emailSent}
                     <p class="sent">Email sent</p>
+                {:else if emailAlreadySent}
+                <p class="alreadySent">Email already sent, wait before sending a new one</p>
                 {:else if !emailSent && loading}
                     <span class="loading">
                         <Fa icon={faSpinner} spin />
@@ -116,6 +119,12 @@
     p.sent {
         padding: 1rem;
         font-size: 2rem;
+        color: var(--green-color);
+    }
+
+    p.alreadySent {
+        padding: 1rem;
+        font-size: 1.2rem;
         color: var(--green-color);
     }
 
