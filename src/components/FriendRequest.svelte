@@ -9,8 +9,11 @@
     const { close } = getContext("simple-modal");
 
     export let request;
+    let xbutton;
+    let ybutton;
 
     const handleFriendshipRequestDelete = async () => {
+        ybutton.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "friends/" + request.id, {
@@ -39,9 +42,11 @@
                 (friendRequest) => friendRequest.id != request.id
             );
         }
+        ybutton.disabled = false;
     };
 
     const handleFriendshipRequestUpdate = async () => {
+        xbutton.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "friends/" + request.id, {
@@ -73,6 +78,8 @@
                 (friendRequest) => friendRequest.id != request.id
             );
         }
+
+        xbutton.disabled = false;
     };
 </script>
 
@@ -95,10 +102,15 @@
     </div>
 
     <div class="buttons">
-        <button class="accept" on:click={handleFriendshipRequestUpdate}
-            >Accept</button
+        <button
+            class="accept"
+            bind:this={xbutton}
+            on:click={handleFriendshipRequestUpdate}>Accept</button
         >
-        <button class="cross" on:click={handleFriendshipRequestDelete}
+        <button
+            bind:this={ybutton}
+            class="cross"
+            on:click={handleFriendshipRequestDelete}
             ><Fa icon={faXmark} /></button
         >
     </div>

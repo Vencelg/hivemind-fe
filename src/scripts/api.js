@@ -1,3 +1,3 @@
-const api = "http://127.0.0.1:8000/api/";
+const api = "http://82.208.16.182:8888/api/";
 
 export default api;

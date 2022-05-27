@@ -27,9 +27,14 @@
     let userFriends = [];
     let loading = true;
     $: userFriends = [];
+    let acceptBtn;
+    let declineBtn;
+    let addBtn;
+    let deleteBtn;
     const { open } = getContext("simple-modal");
     const showUpdateForm = () => open(UpdateUserModal);
-    const showAllFriends = () => open(ShowAllFriendsModal, {friends: userFriends});
+    const showAllFriends = () =>
+        open(ShowAllFriendsModal, { friends: userFriends });
 
     $posts = null;
     onMount(async () => {
@@ -353,6 +358,7 @@
 
     const handleFriendshipDelete = async (user_id) => {
         let id = null;
+        deleteBtn.disabled = true;
 
         for (let i = 0; i < $userProfile.friends_of_this_user.length; i++) {
             if ($userProfile.friends_of_this_user[i].id == user_id) {
@@ -391,10 +397,17 @@
             });
             getUser();
         }
+
+        function delay(time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
+        }
+
+        delay(1000).then(() => deleteBtn.disabled = false);
     };
 
     const handleFriendshipRequestDelete = async (user_id, friend_id) => {
         let id = null;
+        declineBtn.disabled = true;
 
         for (let i = 0; i < $user.friend_requests.length; i++) {
             if (
@@ -431,9 +444,16 @@
             getAuth();
             getUser();
         }
+
+        function delay(time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
+        }
+
+        delay(1000).then(() => declineBtn.disabled = false);
     };
 
     const handleFriendshipCreate = async (user_id, friend_id) => {
+        addBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "friends", {
@@ -463,10 +483,17 @@
             });
             getUser();
         }
+
+        function delay(time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
+        }
+
+        delay(1000).then(() => addBtn.disabled = false);
     };
 
     const handleFriendshipUpdate = async (user_id, friend_id) => {
         let id = null;
+        acceptBtn.disabled = true;
 
         for (let i = 0; i < $user.friend_requests.length; i++) {
             if (
@@ -505,9 +532,15 @@
             toast.push("Friend accepted", {
                 classes: ["successNoBar"],
             });
-            getAuth();
-            getUser();
+            await getAuth();
+            await getUser();
         }
+
+        function delay(time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
+        }
+
+        delay(1000).then(() => acceptBtn.disabled = false);
     };
 
     $: if (params.user != paramsOld.user) {
@@ -539,6 +572,7 @@
                     {/if}
                     {#if isFriendRequested}
                         <button
+                            bind:this={acceptBtn}
                             on:click={handleFriendshipUpdate(
                                 $user.id,
                                 $userProfile.id
@@ -546,6 +580,7 @@
                             class="unfriend">Accept</button
                         >
                         <button
+                            bind:this={declineBtn}
                             class="unfriend"
                             on:click={handleFriendshipRequestDelete(
                                 $user.id,
@@ -556,12 +591,14 @@
                     {#if isFriend}
                         <button
                             class="unfriend"
+                            bind:this={deleteBtn}
                             on:click={handleFriendshipDelete($user.id)}
                             >Unfriend</button
                         >
                     {:else if !isFriend && !isFriendRequested && !isRequested && !isOwner}
                         <button
                             class="addFriend"
+                            bind:this={addBtn}
                             on:click={handleFriendshipCreate(
                                 $user.id,
                                 $userProfile.id
@@ -595,7 +632,7 @@
                             {/if}
                         {/each}
                     </div>
-                    <p class="allFriends" on:click="{showAllFriends}">
+                    <p class="allFriends" on:click={showAllFriends}>
                         Show all friends <span><Fa icon={faAnglesRight} /></span
                         >
                     </p>
