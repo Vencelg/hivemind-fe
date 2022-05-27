@@ -368,23 +368,21 @@
             }
 
             console.log($posts); */
-            let temp = $posts;
+            let result = [];
             let userFriends = [
                 ...$user.friends_of_this_user,
                 ...$user.this_user_friend_of,
             ];
 
             for (let i = 0; i < $posts.length; i++) {
-                console.log(userFriends[i]);
-
-                temp = $posts.filter(
-                    (post) =>
-                        post.user.id == $user.friends_of_this_user[i].id ||
-                        post.user.id == $user.this_user_friend_of[i].id
-                );
-                $posts = temp;
-                console.log($posts);
+                for(let j = 0; j < userFriends.length; j++) {
+                    if($posts[i].user.id == userFriends[j].id) {
+                        result.push($posts[i]);
+                    }
+                }
             }
+
+            $posts = result;
         } else {
             getPosts();
         }
