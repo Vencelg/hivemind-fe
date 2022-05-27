@@ -11,8 +11,11 @@
     let bodyErrors = false;
     let header = post.header;
     let body = post.body;
+    let btn;
 
     const handlePostUpdate = async () => {
+        btn.disabled = true;
+
         headerErrors = false;
         bodyErrors = false;
         let formData = new FormData();
@@ -87,7 +90,7 @@
         id="body"
         bind:value={body}
     />
-    <button type="submit" on:click={handlePostUpdate}>Update</button>
+    <button type="submit" bind:this="{btn}" on:click={handlePostUpdate}>Update</button>
 </form>
 
 <style>

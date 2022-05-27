@@ -6,8 +6,11 @@
     let password = null;
     let emailErrors = null;
     let passwordErrors = null;
+    let btn;
 
     const loginUser = () => {
+        btn.disabled = true;
+
         let errorsSet = false;
         if (!email) {
             emailErrors = "Email required";
@@ -33,6 +36,7 @@
         };
 
         dispatch("logged-user", user);
+
     };
 </script>
 
@@ -61,7 +65,7 @@
         />
     </div>
 
-    <button type="submit">Login</button>
+    <button type="submit" bind:this="{btn}">Login</button>
     <a href="#/register">Need to register?</a>
 </form>
 

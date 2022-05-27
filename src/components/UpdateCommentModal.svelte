@@ -9,8 +9,10 @@
 
     let commentErrors = false;
     let comment_content = comment.comment_content;
+    let btn;
 
     const handleCommentUpdate = async () => {
+        btn.disabled = true;
         commentErrors = false;
         let formData = new FormData();
 
@@ -76,7 +78,9 @@
         id="header"
         bind:value={comment_content}
     />
-    <button type="submit" on:click={handleCommentUpdate}>Update</button>
+    <button type="submit" bind:this={btn} on:click={handleCommentUpdate}
+        >Update</button
+    >
 </form>
 
 <style>

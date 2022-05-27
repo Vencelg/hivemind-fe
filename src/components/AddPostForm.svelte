@@ -154,7 +154,6 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        margin-top: 5rem;
     }
 
     div button.openButton {

@@ -26,6 +26,7 @@
 
     export let post;
     let isOwner = false;
+    let likeBtn;
 
     const dispatch = createEventDispatcher();
     let formOpen = false;
@@ -94,6 +95,7 @@
     };
 
     const handlePostLike = async (postTemp) => {
+        likeBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "posts/like/" + postTemp.id, {
@@ -117,9 +119,11 @@
             post.likes_count += 1;
             post.likes = resultFinal.likes;
         }
+        likeBtn.disabled = false;
     };
 
     const handlePostDislike = async (postTemp) => {
+        likeBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "posts/dislike/" + postTemp.id, {
@@ -147,6 +151,8 @@
                 }
             }
         }
+
+        likeBtn.disabled = false;
     };
 </script>
 
@@ -205,6 +211,7 @@
     <div class="buttons">
         <button>
             <span
+                bind:this="{likeBtn}"
                 class:liked={decideLikedStatus(post)}
                 on:click={() => {
                     if (decideLikedStatus(post)) {

@@ -10,8 +10,10 @@
 
     let responseErrors = false;
     let response_content = response.response_content;
+    let btn;
 
     const handleResponseUpdate = async () => {
+        btn.disabled = true;
         responseErrors = false;
         let formData = new FormData();
 
@@ -76,6 +78,7 @@
                 classes: ["successNoBar"],
             });
             close();
+
         }
     };
 </script>
@@ -88,7 +91,7 @@
         id="header"
         bind:value={response_content}
     />
-    <button type="submit" on:click={handleResponseUpdate}>Update</button>
+    <button type="submit" bind:this="{btn}" on:click={handleResponseUpdate}>Update</button>
 </form>
 
 <style>

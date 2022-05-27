@@ -14,6 +14,7 @@
     let errors = null;
     let verified = false;
     $posts = null;
+    let status;
 
     //ON MOUNT
     onMount(async () => {
@@ -59,6 +60,10 @@
             push("/login");
         }
 
+        getPosts();
+    });
+
+    const getPosts = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "posts/", {
@@ -78,7 +83,7 @@
         if (res.ok) {
             $posts = resultFinal.posts;
         }
-    });
+    };
 
     //TVORBA POSTU
     const handlePostSubmit = async (e) => {
@@ -348,6 +353,42 @@
             }
         }
     };
+    const decideFilter = () => {
+        if (status == "1") {
+            /* $posts = [];
+
+            for (let i = 0; i < $user.this_user_friend_of.length; i++) {
+                $posts = [];
+                $posts = [...$posts, $user.this_user_friend_of[i].posts];
+            }
+
+            for (let i = 0; i < $user.friends_of_this_user.length; i++) {
+                $posts = [];
+                $posts = [...$posts, $user.friends_of_this_user[i].posts];
+            }
+
+            console.log($posts); */
+            let temp = $posts;
+            let userFriends = [
+                ...$user.friends_of_this_user,
+                ...$user.this_user_friend_of,
+            ];
+
+            for (let i = 0; i < $posts.length; i++) {
+                console.log(userFriends[i]);
+
+                temp = $posts.filter(
+                    (post) =>
+                        post.user.id == $user.friends_of_this_user[i].id ||
+                        post.user.id == $user.this_user_friend_of[i].id
+                );
+                $posts = temp;
+                console.log($posts);
+            }
+        } else {
+            getPosts();
+        }
+    };
 </script>
 
 {#if $user && $posts}
@@ -355,6 +396,15 @@
     <main>
         <div class="container">
             <div class="postForm">
+                <select
+                    name="filter"
+                    id="filter"
+                    bind:value={status}
+                    on:change={decideFilter}
+                >
+                    <option value="0">All posts</option>
+                    <option value="1">Only friend posts</option>
+                </select>
                 <AddPostForm on:post-added={handlePostSubmit} />
             </div>
             <div class="posts">
@@ -380,6 +430,30 @@
 {/if}
 
 <style>
+    div.postForm {
+        margin-top: 5rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    select {
+        background-color: var(--white-color);
+        color: #080710;
+        padding: 8px 25px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.2s;
+        outline: none;
+        border: none;
+        align-self: flex-start;
+    }
+
+    option {
+        border-radius: 5px;
+    }
+
     div.loading {
         height: 100vh;
         width: 100%;

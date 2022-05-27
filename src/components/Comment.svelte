@@ -21,6 +21,7 @@
     let dropdownOpen = false;
     let formOpen = false;
     let response_content = "";
+    let likeBtn;
 
     const { open } = getContext("simple-modal");
     const showUpdateForm = (comment) => open(UpdateCommentModal, { comment });
@@ -70,6 +71,8 @@
     };
 
     const handleCommentLike = async (commentTemp) => {
+        likeBtn.disabled = true;
+
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "comments/like/" + commentTemp.id, {
@@ -93,9 +96,13 @@
             comment.likes_count += 1;
             comment.likes = resultFinal.likes;
         }
+
+        likeBtn.disabled = false;
     };
 
     const handleCommentDislike = async (commentTemp) => {
+        likeBtn.disabled = true;
+
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "comments/dislike/" + commentTemp.id, {
@@ -123,6 +130,9 @@
                 }
             }
         }
+
+        likeBtn.disabled = false;
+
     };
 </script>
 
@@ -144,6 +154,7 @@
     <div class="settings">
         <button>
             <span
+            bind:this="{likeBtn}"
                 class:liked={decideLikedStatus(comment)}
                 on:click={() => {
                     if (decideLikedStatus(comment)) {

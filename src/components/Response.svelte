@@ -18,6 +18,7 @@
     export let postId;
     let dropdownOpen = false;
     const dispatch = createEventDispatcher();
+    let likeBtn;
 
     const ChangeDropdownState = () => {
         dropdownOpen = !dropdownOpen;
@@ -37,6 +38,8 @@
     };
 
     const handleResponseLike = async (responseTemp) => {
+        likeBtn.disabled = true;
+
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(api + "responses/like/" + responseTemp.id, {
@@ -60,13 +63,16 @@
             response.likes_count += 1;
             response.likes = resultFinal.likes;
         }
+
+        likeBtn.disabled = false;
     };
 
     const handleResponseDislike = async (responseTemp) => {
+        likeBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
         const res = await fetch(
-            "http://127.0.0.1:8000/api/responses/dislike/" + responseTemp.id,
+            api + "responses/dislike/" + responseTemp.id,
             {
                 method: "DELETE",
                 headers: {
@@ -93,6 +99,7 @@
                 }
             }
         }
+        likeBtn.disabled = false;
     };
 </script>
 
@@ -114,6 +121,7 @@
     <div class="settings">
         <button>
             <span
+            bind:this="{likeBtn}"
                 class:liked={decideLikedStatus(response)}
                 on:click={() => {
                     if (decideLikedStatus(response)) {

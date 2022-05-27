@@ -18,6 +18,7 @@
     let files;
     let imageInput;
     let pfpShow = $user.profile_picture;
+    let btn;
 
     const onImageChange = () => {
         imageChanged = true;
@@ -32,6 +33,7 @@
     };
 
     const handleUserUpdate = async () => {
+        btn.disabled = true;
         nameErrors = false;
         usernameErrors = false;
         let formData = new FormData();
@@ -94,6 +96,8 @@
             });
             close();
         }
+
+        btn.disabled = false;
     };
 </script>
 
@@ -134,7 +138,7 @@
             bind:value={username}
         />
 
-        <button type="submit" on:click={handleUserUpdate}>Save</button>
+        <button type="submit" bind:this="{btn}" on:click={handleUserUpdate}>Save</button>
     </form>
 </div>
 

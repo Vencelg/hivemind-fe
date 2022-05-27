@@ -15,8 +15,11 @@
     let passwordErrors = null;
     let passwordConfirmationErrors = null;
     const _REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let btn;
 
     const registerUser = () => {
+        btn.disabled = true;
+
         let errorsSet = false;
         if (!name) {
             nameErrors = "Name required";
@@ -81,6 +84,7 @@
         };
 
         dispatch("added-user", newUser);
+
     };
 </script>
 
@@ -145,7 +149,7 @@
         />
     </div>
 
-    <button type="submit">Register</button>
+    <button type="submit" bind:this="{btn}">Register</button>
     <a href="#/login">Already Registered?</a>
 </form>
 
