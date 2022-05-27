@@ -96,8 +96,6 @@
             });
             close();
         }
-
-        btn.disabled = false;
     };
 </script>
 
@@ -138,7 +136,9 @@
             bind:value={username}
         />
 
-        <button type="submit" bind:this="{btn}" on:click={handleUserUpdate}>Save</button>
+        <button type="submit" bind:this={btn} on:click={handleUserUpdate}
+            >Save</button
+        >
     </form>
 </div>
 
