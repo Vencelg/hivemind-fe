@@ -10,8 +10,12 @@
     import { faCog } from "@fortawesome/free-solid-svg-icons";
     import { getContext } from "svelte";
     import UpdateUserModal from "../components/UpdateUserModal.svelte";
+    import ShowAllFriendsModal from "../components/ShowAllFriendsModal.svelte";
     import { toast } from "@zerodevx/svelte-toast";
-    import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+    import {
+        faSpinner,
+        faAnglesRight,
+    } from "@fortawesome/free-solid-svg-icons";
     import api from "../scripts/api";
 
     export let params;
@@ -22,9 +26,10 @@
     let isFriendRequested = false;
     let userFriends = [];
     let loading = true;
-
+    $: userFriends = [];
     const { open } = getContext("simple-modal");
     const showUpdateForm = () => open(UpdateUserModal);
+    const showAllFriends = () => open(ShowAllFriendsModal, {friends: userFriends});
 
     $posts = null;
     onMount(async () => {
@@ -102,6 +107,11 @@
         if (res.ok) {
             $userProfile = resultFinal.profile;
             $posts = resultFinal.profile.posts.reverse();
+
+            userFriends = [
+                ...$userProfile.friends_of_this_user,
+                ...$userProfile.this_user_friend_of,
+            ];
             decideFriendStatus();
         } else {
             toast.push("User doesn't exist", {
@@ -503,8 +513,6 @@
     $: if (params.user != paramsOld.user) {
         getUser();
     }
-
-    let helper = 0;
 </script>
 
 {#if $user && $userProfile && $posts}
@@ -569,8 +577,28 @@
                     <p>User has no friends</p>
                 </div>
             {:else if $userProfile.friends_of_this_user.length + $userProfile.this_user_friend_of.length > 9}
-                <div class="noFriends">
-                    <p>sem pujde modal</p>
+                <div class="friendBox">
+                    <div class="friends">
+                        {#each userFriends as friend, i}
+                            {#if i < 9}
+                                <div>
+                                    <a href={"#/profile/" + friend.id}>
+                                        <div
+                                            class="friendImage"
+                                            style="background-image: url({friend.profile_picture});"
+                                        />
+                                        <p>
+                                            {friend.name}
+                                        </p>
+                                    </a>
+                                </div>
+                            {/if}
+                        {/each}
+                    </div>
+                    <p class="allFriends" on:click="{showAllFriends}">
+                        Show all friends <span><Fa icon={faAnglesRight} /></span
+                        >
+                    </p>
                 </div>
             {:else}
                 <div class="friends">
@@ -627,6 +655,24 @@
 {/if}
 
 <style>
+    div.friendBox {
+        display: flex;
+        flex-direction: column;
+    }
+
+    p.allFriends {
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: 0.1s;
+        padding-bottom: 10px;
+        margin-left: 10px;
+        width: max-content;
+    }
+
+    p.allFriends:hover {
+        color: var(--green-color);
+    }
+
     div.loading {
         height: 100vh;
         width: 100%;

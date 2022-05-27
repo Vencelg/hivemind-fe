@@ -4,6 +4,7 @@
     import {
         faCaretDown,
         faPersonCirclePlus,
+        faHouse,
     } from "@fortawesome/free-solid-svg-icons";
     import { faUser } from "@fortawesome/free-solid-svg-icons";
     import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
@@ -39,6 +40,13 @@
         <div class="dropdown">
             <p
                 on:click={() => {
+                    push("/");
+                }}
+            >
+                Home<span><Fa icon={faHouse} /></span>
+            </p>
+            <p
+                on:click={() => {
                     push("/profile/" + $user.id);
                 }}
             >
@@ -71,7 +79,7 @@
     .dropdown {
         position: absolute;
         background-color: var(--nav-bg-color);
-        bottom: -158px;
+        bottom: -200px;
         right: 9.5vw;
         min-width: 170px;
         margin: auto;
@@ -163,7 +171,7 @@
 
         .dropdown {
             right: 20px;
-            bottom: -159px;
+            bottom: -200px;
         }
     }
 
@@ -173,7 +181,7 @@
         }
         .dropdown {
             right: 0;
-            bottom: -168px;
+            bottom: -210px;
         }
         .dropdownBox #mobileSpan {
             display: contents;
