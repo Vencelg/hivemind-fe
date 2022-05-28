@@ -196,4 +196,10 @@
         background-color: var(--comment-color);
         color: var(--white-color);
     }
+
+    @media only screen and (max-width: 700px) {
+        div.box {
+            width: 95%;
+        }
+    }
 </style>

@@ -26,4 +26,10 @@
         width: 60%;
         margin: auto;
     }
+
+    @media only screen and (max-width: 700px) {
+        div.box {
+            width: 90%;
+        }
+    }
 </style>
