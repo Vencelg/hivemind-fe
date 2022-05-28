@@ -94,6 +94,7 @@
 
     //TVORBA POSTU
     const handlePostSubmit = async (e) => {
+        formOpen = false;
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
 
