@@ -202,4 +202,10 @@
             width: 95%;
         }
     }
+
+    @media only screen and (max-width: 425px) {
+        div.box div.flex div.userData {
+            padding-left: 0.1rem;
+        }
+    }
 </style>

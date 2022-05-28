@@ -29,7 +29,7 @@
 
     @media only screen and (max-width: 700px) {
         div.box {
-            width: 90%;
+            width: 100%;
         }
     }
 </style>
