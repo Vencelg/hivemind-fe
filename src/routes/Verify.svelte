@@ -11,6 +11,7 @@
     let loading = false;
     let buttonStatus = "";
 
+    //Funkce onMount, která se spouští při spuštění stránky
     onMount(async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
@@ -47,6 +48,7 @@
         }
     });
 
+    //Funkce na odeslání verifikačního emailu
     const sendVerificationEmail = async () => {
         loading = true;
         const token = "Bearer " + window.localStorage.getItem("token");

@@ -6,11 +6,12 @@
     import { toast } from "@zerodevx/svelte-toast";
     import api from "../scripts/api";
 
-
+    //Pokud je uživatel přihlášený, vrátí ho aplikace na předešlé url
     if ($user) {
         pop();
     }
 
+    //Funkce na fetch loginu
     const handleLogin = async (e) => {
         const details = e.detail;
 

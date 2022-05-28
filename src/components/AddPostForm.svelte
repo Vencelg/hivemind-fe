@@ -20,10 +20,7 @@
     let imageErrors = false;
     let pfpShow = null;
 
-    const ChangeFormState = () => {
-        formOpen = !formOpen;
-    };
-
+    //Renderování obrázku při tvorbě postu
     const ChangeImageState = () => {
         imageSet = true;
         let temp = null;
@@ -36,6 +33,7 @@
         reader.readAsDataURL(files[0]);
     };
 
+    //Kontrola formuláře na přidání postu
     const AddPost = () => {
         let formData = new FormData();
         let errorsAdded = false;
@@ -95,53 +93,46 @@
 </script>
 
 <div>
-    <button on:click={ChangeFormState} class="openButton">Add Post</button>
+    <form on:submit|preventDefault={AddPost} enctype="multipart/form-data">
+        <label for="header">Post header</label>
+        <input
+            class:outline={headerErrors == true}
+            type="text"
+            name="header"
+            id="header"
+            bind:value={header}
+        />
+        <label for="body">Post body</label>
+        <textarea
+            class:outline={bodyErrors == true}
+            name="body"
+            id="body"
+            bind:value={body}
+        />
 
-    {#if formOpen}
-        <form on:submit|preventDefault={AddPost} enctype="multipart/form-data">
-            <label for="header">Post header</label>
-            <input
-                class:outline={headerErrors == true}
-                type="text"
-                name="header"
-                id="header"
-                bind:value={header}
-            />
-            <label for="body">Post body</label>
-            <textarea
-                class:outline={bodyErrors == true}
-                name="body"
-                id="body"
-                bind:value={body}
-            />
-
-            {#if imageSet}
-                <div
-                    class="postImage"
-                    style="background-image: url({pfpShow});"
+        {#if imageSet}
+            <div class="postImage" style="background-image: url({pfpShow});">
+                <span
+                    class="cross"
+                    on:click={() => {
+                        pfpShow, (imageSet = null);
+                    }}><Fa icon={faXmark} /></span
                 >
-                    <span
-                        class="cross"
-                        on:click={() => {
-                            pfpShow, (imageSet = null);
-                        }}><Fa icon={faXmark} /></span
-                    >
-                </div>
-            {/if}
+            </div>
+        {/if}
 
-            <label for="file-upload" class="custom-file-upload">
-                Upload image
-            </label>
-            <input
-                id="file-upload"
-                type="file"
-                bind:files
-                bind:this={imageInput}
-                on:change={ChangeImageState}
-            />
-            <button type="submit">Upload</button>
-        </form>
-    {/if}
+        <label for="file-upload" class="custom-file-upload">
+            Upload image
+        </label>
+        <input
+            id="file-upload"
+            type="file"
+            bind:files
+            bind:this={imageInput}
+            on:change={ChangeImageState}
+        />
+        <button type="submit">Upload</button>
+    </form>
 </div>
 
 <style>
@@ -154,25 +145,6 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
-    }
-
-    div button.openButton {
-        background-color: var(--white-color);
-        color: #080710;
-        padding: 8px 25px;
-        font-size: 15px;
-        font-weight: 600;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.2s;
-        outline: none;
-        border: none;
-        align-self: flex-end;
-    }
-
-    div button.openButton:hover {
-        background-color: var(--green-color);
-        color: var(--white-color);
     }
 
     form {

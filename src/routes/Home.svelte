@@ -15,8 +15,9 @@
     let verified = false;
     $posts = null;
     let status;
+    let formOpen = false;
 
-    //ON MOUNT
+    //Funkce onMount se spouští při spuštění této stránky
     onMount(async () => {
         if (window.localStorage.getItem("token")) {
             const token = "Bearer " + window.localStorage.getItem("token");
@@ -63,6 +64,12 @@
         getPosts();
     });
 
+    //interakce s tlačítkem pro formu
+    const ChangeFormState = () => {
+        formOpen = !formOpen;
+    };
+
+    //Funkce na fetch postů
     const getPosts = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
@@ -141,6 +148,7 @@
         }
     };
 
+    //Mazání postu
     const handlePostDelete = async (e) => {
         const details = e.detail;
         console.log(details);
@@ -170,37 +178,7 @@
         }
     };
 
-    const postUpdateHelper = async (e) => {
-        let details = e.detail;
-
-        const token = "Bearer " + window.localStorage.getItem("token");
-
-        const resUpdate = await fetch(api + "posts/" + details.get("id"), {
-            method: "POST",
-            body: details,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                Accept: "application/json",
-                Authorization: token,
-            },
-            mode: "cors",
-        });
-
-        const jsonUpdate = await resUpdate.json();
-        const resultUpdate = JSON.stringify(jsonUpdate);
-        let resultFinalUpdate = await JSON.parse(resultUpdate);
-
-        console.log(resultFinalUpdate);
-
-        if (resUpdate.ok) {
-            for (let i = 0; i < $posts.length; i++) {
-                if ($posts[i].id == resultFinalUpdate.post.id) {
-                    $posts[i] = resultFinalUpdate.post;
-                }
-            }
-        }
-    };
-
+    //Tvorba komentáře
     const handleCommentSubmit = async (e) => {
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -233,6 +211,7 @@
         }
     };
 
+    //Mazání komentáře
     const handleCommentDelete = async (e) => {
         const details = e.detail;
         console.log(details);
@@ -269,6 +248,7 @@
         }
     };
 
+    //Tvorba odpovědi na komentář
     const handleResponseSubmit = async (e) => {
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -306,6 +286,8 @@
             }
         }
     };
+
+    //Mazání odpovědi na komentář
     const handleResponseDelete = async (e) => {
         const details = e.detail;
         console.log(details);
@@ -353,21 +335,10 @@
             }
         }
     };
+
+    //Funkce na filtraci postů
     const decideFilter = () => {
         if (status == "1") {
-            /* $posts = [];
-
-            for (let i = 0; i < $user.this_user_friend_of.length; i++) {
-                $posts = [];
-                $posts = [...$posts, $user.this_user_friend_of[i].posts];
-            }
-
-            for (let i = 0; i < $user.friends_of_this_user.length; i++) {
-                $posts = [];
-                $posts = [...$posts, $user.friends_of_this_user[i].posts];
-            }
-
-            console.log($posts); */
             let result = [];
             let userFriends = [
                 ...$user.friends_of_this_user,
@@ -375,8 +346,8 @@
             ];
 
             for (let i = 0; i < $posts.length; i++) {
-                for(let j = 0; j < userFriends.length; j++) {
-                    if($posts[i].user.id == userFriends[j].id) {
+                for (let j = 0; j < userFriends.length; j++) {
+                    if ($posts[i].user.id == userFriends[j].id) {
                         result.push($posts[i]);
                     }
                 }
@@ -403,7 +374,12 @@
                     <option value="0">All posts</option>
                     <option value="1">Only friend posts</option>
                 </select>
-                <AddPostForm on:post-added={handlePostSubmit} />
+                <button on:click={ChangeFormState} class="openButton"
+                    >Add Post</button
+                >
+                {#if formOpen}
+                    <AddPostForm on:post-added={handlePostSubmit} />
+                {/if}
             </div>
             <div class="posts">
                 {#each $posts as post}
@@ -450,6 +426,25 @@
 
     option {
         border-radius: 5px;
+    }
+
+    div button.openButton {
+        background-color: var(--white-color);
+        color: #080710;
+        padding: 8px 25px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.2s;
+        outline: none;
+        border: none;
+        align-self: flex-end;
+    }
+
+    div button.openButton:hover {
+        background-color: var(--green-color);
+        color: var(--white-color);
     }
 
     div.loading {

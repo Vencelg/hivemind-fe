@@ -32,16 +32,20 @@
     let addBtn;
     let deleteBtn;
     const { open } = getContext("simple-modal");
+    //Funkce na otevírání modálů
     const showUpdateForm = () => open(UpdateUserModal);
     const showAllFriends = () =>
         open(ShowAllFriendsModal, { friends: userFriends });
 
     $posts = null;
+
+    //onMount funkce
     onMount(async () => {
         getAuth();
         getUser();
     });
 
+    //Funkce na autentizaci uživatele
     const getAuth = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
@@ -87,6 +91,7 @@
         }
     };
 
+    //funkce na získání profilu uživatele
     const getUser = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 
@@ -128,6 +133,7 @@
         paramsOld = params;
     };
 
+    //Funkce, která určí přátelský status mezi přihlášeným uživatelem a profilem
     const decideFriendStatus = () => {
         isOwner = false;
         isRequested = false;
@@ -168,13 +174,9 @@
                 }
             }
         }
-
-        console.log(isOwner);
-        console.log(isFriendRequested);
-        console.log(isRequested);
-        console.log(isFriend);
     };
 
+    //Funkce na mazání postů
     const handlePostDelete = async (e) => {
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -194,13 +196,12 @@
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
-        console.log(resultFinal);
-
         if (res.ok) {
             $posts = $posts.filter((post) => post.id != details);
         }
     };
 
+    //funkce na tvorbu komentářů
     const handleCommentSubmit = async (e) => {
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -222,9 +223,7 @@
 
         if (res.ok) {
             for (let i = 0; i < $posts.length; i++) {
-                console.log($posts[i]);
                 if ($posts[i].id == resultFinal.comment.post_id) {
-                    console.log($posts[i]);
                     $posts[i].comments = [
                         ...$posts[i].comments,
                         resultFinal.comment,
@@ -234,6 +233,7 @@
         }
     };
 
+    //funkce na tvorbu odpovědí na komenty
     const handleResponseSubmit = async (e) => {
         const details = e.detail;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -272,6 +272,7 @@
         }
     };
 
+    //funkce na mazání komentů
     const handleCommentDelete = async (e) => {
         const details = e.detail;
         console.log(details);
@@ -292,13 +293,10 @@
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
-        console.log(resultFinal);
-
         if (res.ok) {
             for (let i = 0; i < $posts.length; i++) {
                 for (let j = 0; j < $posts[i].comments.length; j++) {
                     if ($posts[i].comments[j].id == details.id) {
-                        console.log($posts[i].comments);
                         let temp = $posts;
                         temp[i].comments.splice(j, 1);
                         $posts = temp;
@@ -308,6 +306,7 @@
         }
     };
 
+    //funkce na mazání odpovědí na komenty
     const handleResponseDelete = async (e) => {
         const details = e.detail;
         console.log(details);
@@ -327,8 +326,6 @@
         const json = await res.json();
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
-
-        console.log(resultFinal);
 
         if (res.ok) {
             for (let i = 0; i < $posts.length; i++) {
@@ -356,6 +353,7 @@
         }
     };
 
+    //funkce na oddělání uživatele z přátel
     const handleFriendshipDelete = async (user_id) => {
         let id = null;
         deleteBtn.disabled = true;
@@ -402,9 +400,10 @@
             return new Promise((resolve) => setTimeout(resolve, time));
         }
 
-        delay(1000).then(() => deleteBtn.disabled = false);
+        delay(1000).then(() => (deleteBtn.disabled = false));
     };
 
+    //funkce na odmítnutí žádosti o přátelství
     const handleFriendshipRequestDelete = async (user_id, friend_id) => {
         let id = null;
         declineBtn.disabled = true;
@@ -449,9 +448,10 @@
             return new Promise((resolve) => setTimeout(resolve, time));
         }
 
-        delay(1000).then(() => declineBtn.disabled = false);
+        delay(1000).then(() => (declineBtn.disabled = false));
     };
 
+    //funkce na odeslání žádosti o přátelství
     const handleFriendshipCreate = async (user_id, friend_id) => {
         addBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -475,8 +475,6 @@
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
-        console.log(resultFinal);
-
         if (res.ok) {
             toast.push("Friend request sent", {
                 classes: ["successNoBar"],
@@ -488,9 +486,10 @@
             return new Promise((resolve) => setTimeout(resolve, time));
         }
 
-        delay(1000).then(() => addBtn.disabled = false);
+        delay(1000).then(() => (addBtn.disabled = false));
     };
 
+    //funkce na příjmutí žádosti o přátelství
     const handleFriendshipUpdate = async (user_id, friend_id) => {
         let id = null;
         acceptBtn.disabled = true;
@@ -526,8 +525,6 @@
         const result = JSON.stringify(json);
         let resultFinal = await JSON.parse(result);
 
-        console.log(resultFinal);
-
         if (res.ok) {
             toast.push("Friend accepted", {
                 classes: ["successNoBar"],
@@ -540,7 +537,7 @@
             return new Promise((resolve) => setTimeout(resolve, time));
         }
 
-        delay(1000).then(() => acceptBtn.disabled = false);
+        delay(1000).then(() => (acceptBtn.disabled = false));
     };
 
     $: if (params.user != paramsOld.user) {

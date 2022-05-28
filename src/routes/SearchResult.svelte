@@ -12,6 +12,8 @@
     let paramsOld = params;
     let usersSearchResult = [];
     let searchFinished = false;
+
+    //Funkce onMount, která se spouští při spuštění stránky
     onMount(async () => {
         if (window.localStorage.getItem("token")) {
             const token = "Bearer " + window.localStorage.getItem("token");
@@ -59,6 +61,7 @@
         getUsers();
     });
 
+    //Funkce na získání vyhledaných uživatelů
     const getUsers = async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
 

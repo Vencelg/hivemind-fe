@@ -4,6 +4,7 @@
     import api from "../scripts/api";
     import { onMount } from "svelte";
 
+    //onMount spuštění při spuštění stránky, která fetchne logout
     onMount(async () => {
         const token = "Bearer " + window.localStorage.getItem("token");
         console.log(token);
