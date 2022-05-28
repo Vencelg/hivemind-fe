@@ -12,6 +12,7 @@
     let xbutton;
     let ybutton;
 
+    //Odmítnutí žádosti o přátelství
     const handleFriendshipRequestDelete = async () => {
         ybutton.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -45,6 +46,7 @@
         ybutton.disabled = false;
     };
 
+    //Přijmutí žádosti o přátelství
     const handleFriendshipRequestUpdate = async () => {
         xbutton.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");

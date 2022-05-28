@@ -13,6 +13,7 @@
     let body = post.body;
     let btn;
 
+    //Kontrola formuláře na úpravu postu
     const handlePostUpdate = async () => {
         btn.disabled = true;
 

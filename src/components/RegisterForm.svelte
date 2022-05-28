@@ -17,6 +17,7 @@
     const _REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let btn;
 
+    //Kontrola registračního formuláře
     const registerUser = () => {
         btn.disabled = true;
 

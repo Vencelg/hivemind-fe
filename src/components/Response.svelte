@@ -24,10 +24,12 @@
         dropdownOpen = !dropdownOpen;
     };
 
+    //Funkce na dispatch smazání odpovědi na komentář
     const DeleteResponse = (id, postId, commentId) => {
         dispatch("response-deleted", { id, postId, commentId });
     };
 
+    //Funkce na zjištění zda li dal uživatel like
     const decideLikedStatus = (response) => {
         for (let i = 0; i < response.likes.length; i++) {
             if (response.likes[i].id == $user.id) {
@@ -37,6 +39,7 @@
         return false;
     };
 
+    //Funkce na likenutí odpovědi na komentář
     const handleResponseLike = async (responseTemp) => {
         likeBtn.disabled = true;
 
@@ -67,23 +70,21 @@
         likeBtn.disabled = false;
     };
 
+    //Funkce na likenutí odpovědi na komentář
     const handleResponseDislike = async (responseTemp) => {
         likeBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
 
-        const res = await fetch(
-            api + "responses/dislike/" + responseTemp.id,
-            {
-                method: "DELETE",
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    Accept: "application/json",
-                    "Content-type": "application/json",
-                    Authorization: token,
-                },
-                mode: "cors",
-            }
-        );
+        const res = await fetch(api + "responses/dislike/" + responseTemp.id, {
+            method: "DELETE",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                Accept: "application/json",
+                "Content-type": "application/json",
+                Authorization: token,
+            },
+            mode: "cors",
+        });
 
         const json = await res.json();
         const result = JSON.stringify(json);
@@ -121,7 +122,7 @@
     <div class="settings">
         <button>
             <span
-            bind:this="{likeBtn}"
+                bind:this={likeBtn}
                 class:liked={decideLikedStatus(response)}
                 on:click={() => {
                     if (decideLikedStatus(response)) {

@@ -48,12 +48,14 @@
         dropdownOpen = !dropdownOpen;
     };
 
+    //Dispatch na smazání postu
     const DeletePost = (postId) => {
         dropdownOpen = false;
         const id = postId;
         dispatch("post-deleted", id);
     };
 
+    //Dispatch na přidání komentáře
     const AddComment = (id) => {
         const formData = new FormData();
 
@@ -73,18 +75,22 @@
         comment_content = "";
     };
 
+    //Dispatch na smazání komentáře
     const DeleteComment = (e) => {
         dispatch("comment-deleted", e.detail);
     };
 
+    //Dispatch na tvorbu odpovědi na komentář
     const AddResponse = (e) => {
         dispatch("response-added", e.detail);
     };
 
+    //Dispatch na smazání odpovědi na komentář
     const DeleteResponse = (e) => {
         dispatch("response-deleted", e.detail);
     };
 
+    //Funkce na zjištění, zda li dal uživatel like na post
     const decideLikedStatus = (post) => {
         for (let i = 0; i < post.likes.length; i++) {
             if (post.likes[i].id == $user.id) {
@@ -94,6 +100,7 @@
         return false;
     };
 
+    //Funkce na likenutí postu
     const handlePostLike = async (postTemp) => {
         likeBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");
@@ -122,6 +129,7 @@
         likeBtn.disabled = false;
     };
 
+    //Funkce na dislikenutí postu
     const handlePostDislike = async (postTemp) => {
         likeBtn.disabled = true;
         const token = "Bearer " + window.localStorage.getItem("token");

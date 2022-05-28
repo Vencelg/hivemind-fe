@@ -20,6 +20,7 @@
     let pfpShow = $user.profile_picture;
     let btn;
 
+    //Funkce na renderování obrázku do divu
     const onImageChange = () => {
         imageChanged = true;
         let temp = null;
@@ -32,6 +33,7 @@
         reader.readAsDataURL(files[0]);
     };
 
+    //Kontrola formuláře na úpravu uživatele
     const handleUserUpdate = async () => {
         btn.disabled = true;
         nameErrors = false;

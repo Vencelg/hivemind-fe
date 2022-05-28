@@ -12,6 +12,7 @@
     let response_content = response.response_content;
     let btn;
 
+    //Kontrola formuláře na úpravu odpovědi na komentář
     const handleResponseUpdate = async () => {
         btn.disabled = true;
         responseErrors = false;

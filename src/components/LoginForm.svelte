@@ -8,6 +8,7 @@
     let passwordErrors = null;
     let btn;
 
+    //Kontrola login formuláře
     const loginUser = () => {
         btn.disabled = true;
 

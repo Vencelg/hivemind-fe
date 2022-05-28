@@ -11,6 +11,7 @@
     let comment_content = comment.comment_content;
     let btn;
 
+    //Kontrola formuláře na úpravu komentáře
     const handleCommentUpdate = async () => {
         btn.disabled = true;
         commentErrors = false;

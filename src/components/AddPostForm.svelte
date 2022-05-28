@@ -199,6 +199,7 @@
         color: var(--white-color);
         resize: none;
         font-size: 1.1rem;
+        margin-bottom: 3rem;
     }
 
     form div.postImage {

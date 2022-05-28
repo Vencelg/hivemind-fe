@@ -23,6 +23,7 @@
     let response_content = "";
     let likeBtn;
 
+    //Zobrazení modálů
     const { open } = getContext("simple-modal");
     const showUpdateForm = (comment) => open(UpdateCommentModal, { comment });
 
@@ -34,14 +35,17 @@
         dropdownOpen = !dropdownOpen;
     };
 
+    //Dispatch smazání komentáře
     const DeleteComment = (id, postId) => {
         dispatch("comment-deleted", { id, postId });
     };
 
+    //Dispatch smazání odpovědi na komentář
     const DeleteResponse = (e) => {
         dispatch("response-deleted", e.detail);
     };
 
+    //funkce na přidání odpovědi na komentář
     const AddResponse = (id, commentId) => {
         const formData = new FormData();
         console.log("coment");
@@ -61,6 +65,7 @@
         response_content = "";
     };
 
+    //Funkce na zjištění zda li uživatel dal like na komentář
     const decideLikedStatus = (comment) => {
         for (let i = 0; i < comment.likes.length; i++) {
             if (comment.likes[i].id == $user.id) {
@@ -70,6 +75,7 @@
         return false;
     };
 
+    //Funkce na likenutí komentu
     const handleCommentLike = async (commentTemp) => {
         likeBtn.disabled = true;
 
@@ -100,6 +106,7 @@
         likeBtn.disabled = false;
     };
 
+    //Funkce na dislikenutí komentu
     const handleCommentDislike = async (commentTemp) => {
         likeBtn.disabled = true;
 
