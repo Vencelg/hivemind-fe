@@ -365,18 +365,20 @@
     <main>
         <div class="container">
             <div class="postForm">
-                <select
-                    name="filter"
-                    id="filter"
-                    bind:value={status}
-                    on:change={decideFilter}
-                >
-                    <option value="0">All posts</option>
-                    <option value="1">Only friend posts</option>
-                </select>
-                <button on:click={ChangeFormState} class="openButton"
-                    >Add Post</button
-                >
+                <div class="flexBtns">
+                    <select
+                        name="filter"
+                        id="filter"
+                        bind:value={status}
+                        on:change={decideFilter}
+                    >
+                        <option value="0">All posts</option>
+                        <option value="1">Only friend posts</option>
+                    </select>
+                    <button on:click={ChangeFormState} class="openButton"
+                        >Add Post</button
+                    >
+                </div>
                 {#if formOpen}
                     <AddPostForm on:post-added={handlePostSubmit} />
                 {/if}
@@ -404,11 +406,17 @@
 {/if}
 
 <style>
+    div.flexBtns {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     div.postForm {
         margin-top: 5rem;
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: center;
     }
     select {
         background-color: var(--white-color);
